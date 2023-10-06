@@ -1,35 +1,21 @@
 import React, { useState } from 'react';
+import { FaGithub } from 'react-icons/fa';
 import logo from '../assets/logo-removebg.png';
 
 function Navbar() {
-    const [isOpen, setIsOpen] = useState(false);
-
     return (
-        <nav className="flex bg-neutral-500 text-white p-5">
-            {/* Hamburger button */}
-            <button 
-                className="sm:hidden block" 
-                onClick={() => setIsOpen(!isOpen)}>
-                🍔
-            </button>
-            
-            {/* Links */}
-            <div className={`flex-shrink-0 border-2 gap-4 ${isOpen ? 'flex' : 'hidden'} sm:flex w-1/3`}>
-                <a href="/">Home</a>
-                <a href="/about">About</a>
-                <a href="/contact">Contact</a>
-            </div>
+        <nav className="relative bg-customDarkBlue p-3">
 
-            {/* Middle div */}
-            <div className='flex flex-grow justify-center items-center gap-1 w-full sm:w-1/3 border-2'>
+            <div className='flex justify-center items-center text-2xl gap-1'>
                 <h1>Algorithm</h1>
                 <img src={logo} className='w-10' alt="Logo" />
                 <h1>Visualizer</h1>
             </div>
 
-            {/* Right div */}
-            <div className="flex-shrink-0 border-2 hidden sm:block sm:w-1/3">
-                <p className='text-right'>Github</p>
+            <div className="absolute top-2 right-2 p-1 hidden sm:block hover:text-customOffWhite">
+                <a href="https://github.com/BradT615/Algorithm-Visualizer" target="_blank" rel="noopener noreferrer">
+                    <FaGithub size={40} />
+                </a>
             </div>
         </nav>
     );

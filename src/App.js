@@ -7,7 +7,7 @@ import About from './components/About';
 function App() {
     return (
         <Router>
-            <div>
+            <div className='bg-customBlue min-h-screen text-customGray'>
                 <Navbar />
                 <Routes>
                     <Route path="/" element={<Home />} />
