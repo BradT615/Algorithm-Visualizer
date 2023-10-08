@@ -9,7 +9,7 @@ function App() {
         <Router>
             <div className='flex flex-col bg-customBlue min-h-screen text-customGray'>
                 <Navbar />
-                <div className="flex flex-grow">
+                <div>
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/:algorithmName" element={<Algorithm />} />

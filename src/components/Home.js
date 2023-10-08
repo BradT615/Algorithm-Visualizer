@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import logo from '../assets/logo-removebg.png';
 
 function Home() {
     const algorithmNames = [
@@ -10,12 +11,14 @@ function Home() {
     ];
 
     return (
-        <div className="flex flex-col flex-grow">
-            <div className="flex-grow grid grid-cols-4 gap-4 w-full border-2">
-                {/* Grid items */}
+        <div className="h-full max-w-7xl m-auto flex flex-col justify-center items-center">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-24 p-10">
                 {algorithmNames.map((name, i) => (
                     <Link key={i} to={`/${name}`}>
-                        <div className="bg-gray-300 p-4">{name}</div>
+                        <div className="bg-customGray text-customOffWhite p-4 flex flex-col items-center w-32">
+                            <img src={logo} alt="Algorithm Logo" className="mb-2" />
+                            {name}
+                        </div>
                     </Link>
                 ))}
             </div>
