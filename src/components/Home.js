@@ -12,11 +12,11 @@ function Home() {
 
     return (
         <div className="h-full max-w-7xl m-auto flex flex-col justify-center items-center">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-24 p-10">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-24 p-10">
                 {algorithmNames.map((name, i) => (
                     <Link key={i} to={`/${name}`}>
-                        <div className="bg-customGray text-customOffWhite p-4 flex flex-col items-center w-32">
-                            <img src={logo} alt="Algorithm Logo" className="mb-2" />
+                        <div className="bg-customBlue text-customOffWhite p-4 flex flex-col items-center rounded-lg w-full transform hover:scale-105 transition-transform">
+                            <img src={logo} alt="Algorithm Logo" className="mb-2 p-4 bg-customGray rounded-lg" />
                             {name}
                         </div>
                     </Link>

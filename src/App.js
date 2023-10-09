@@ -7,7 +7,7 @@ import Algorithm from './components/Algorithm';
 function App() {
     return (
         <Router>
-            <div className='flex flex-col bg-customBlue min-h-screen text-customGray'>
+            <div className='flex flex-col bg-customDarkBlue min-h-screen text-customGray'>
                 <Navbar />
                 <div>
                     <Routes>
