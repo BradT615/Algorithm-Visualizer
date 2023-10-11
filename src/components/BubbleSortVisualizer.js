@@ -24,7 +24,7 @@ function BubbleSortVisualizer() {
         for (let i = 0; i < n-1; i++) {
             for (let j = 0; j < n-i-1; j++) {
                 setActiveIndices([j, j+1]); // Highlight the elements being compared
-                await new Promise(resolve => setTimeout(resolve, 1)); // Introduce a delay
+                await new Promise(resolve => setTimeout(resolve, 0.1)); // Introduce a delay
     
                 if (arr[j] > arr[j+1]) {
                     // swap arr[j] and arr[j+1]
@@ -33,7 +33,7 @@ function BubbleSortVisualizer() {
                     arr[j+1] = temp;
     
                     setData([...arr]);
-                    await new Promise(resolve => setTimeout(resolve, 1)); // Introduce a delay for swap visualization
+                    await new Promise(resolve => setTimeout(resolve, 0.1)); // Introduce a delay for swap visualization
                 }
             }
         }
@@ -57,15 +57,7 @@ function BubbleSortVisualizer() {
     return (
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4'>
             <h1 className='text-4xl mb-10'>Bubble Sort</h1>
-            <input
-                type="number"
-                min="1"
-                value={numItems}
-                onChange={handleNumItemsChange}
-                className="mb-4 px-4 py-2 border rounded"
-                placeholder="Number of items"
-            />
-            <div className="flex justify-center items-end space-x-1 max-w-3xl" style={{height: '400px', width: '90%'}}>
+            <div className="flex justify-center items-end max-w-3xl" style={{height: '400px', width: '90%', gap: '2px'}}>
                 {data.map((value, idx) => (
                     <div 
                         key={idx} 
@@ -73,13 +65,21 @@ function BubbleSortVisualizer() {
                             height: `${(value / maxNumber) * 100}%`,
                             width: `${barWidthPercentage}%`
                         }}
-                        className={`p-2 ${activeIndices.includes(idx) ? 'bg-customPink' : 'bg-customLightBlue'}`}
+                        className={`${activeIndices.includes(idx) ? 'bg-customPink' : 'bg-customLightBlue'}`}
                     ></div>
                 ))}
             </div>
-            <div>
+            <div className='flex'>
                 <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg mr-4' onClick={bubbleSort}>Sort</button>
                 <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={randomizeData}>Randomize</button>
+                <input
+                    type="number"
+                    min="1"
+                    value={numItems}
+                    onChange={handleNumItemsChange}
+                    className="mx-4 px-2 py-1 border rounded w-20"
+                    placeholder="Number of items"
+                />
             </div>
         </div>
     );
