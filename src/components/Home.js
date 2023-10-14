@@ -4,7 +4,7 @@ import logo from '../assets/logo-removebg.png';
 
 function Home() {
     const algorithmNames = [
-        "BinarySearch", "LinearSearch", "QuickSort", "MergeSort",
+        "BubbleSort", "InsertionSort", "SelectionSort", "MergeSort",
         "InsertionSort", "SelectionSort", "BubbleSort", "HeapSort",
         "RadixSort", "BFS", "DFS", "Dijkstra",
         "AStarSearch", "ShellSort", "CountingSort", "TopologicalSort"

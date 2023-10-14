@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-function BubbleSortVisualizer() {
+function BubbleSort() {
     const shuffleArray = arr => {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -140,4 +140,4 @@ function BubbleSortVisualizer() {
     );
 }
 
-export default BubbleSortVisualizer;
+export default BubbleSort;
