@@ -20,6 +20,7 @@ function MergeSort() {
         numItems: 10,
         data: generateData(10),
         activeIndices: [],
+        movingIndices: [],
         completedIndices: [],
         speedMultiplier: 1
     });
@@ -55,6 +56,12 @@ function MergeSort() {
             setState(prevState => ({
                 ...prevState,
                 activeIndices: [start + i, start + j],
+            }));
+
+            // Highlight the elements being moved
+            setState(prevState => ({
+                ...prevState,
+                movingIndices: [k],
             }));
 
             await new Promise(resolve => setTimeout(resolve, delay));
@@ -149,17 +156,18 @@ function MergeSort() {
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12'>
             <h1 className='text-4xl my-10'>Merge Sort</h1>
             <div className="flex justify-center items-end max-w-4xl" style={{ height: '400px', width: '90%', gap: '2px' }}>
-                {state.data.map((value, idx) => (
-                    <div 
-                        key={idx}
-                        style={{ height: `${(value / maxNumber) * 100}%`, width: `${barWidth}%` }}
-                        className={`
-                            ${state.activeIndices.includes(idx) ? 'bg-customPink' : ''}
-                            ${state.completedIndices.includes(idx) ? 'bg-customPurple' : ''}
-                            ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) ? 'bg-customLightBlue' : ''}
-                        `}
-                    />
-                ))}
+            {state.data.map((value, idx) => (
+                <div 
+                    key={idx}
+                    style={{ height: `${(value / maxNumber) * 100}%`, width: `${barWidth}%` }}
+                    className={`
+                        ${state.activeIndices.includes(idx) ? 'bg-customPink' : ''}
+                        ${state.completedIndices.includes(idx) ? 'bg-customPurple' : ''}
+                        ${state.movingIndices.includes(idx) ? 'bg-customBlue' : ''} {/* new line for moving bars */}
+                        ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) && !state.movingIndices.includes(idx) ? 'bg-customLightBlue' : ''}
+                    `}
+                />
+            ))}
             </div>
             <div className='flex flex-col-reverse sm:flex-row gap-4 w-full max-w-xl pt-10'>
                 <div className='flex justify-center gap-4 w-full'>
