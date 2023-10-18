@@ -25,26 +25,28 @@ function MergeSort() {
         speedMultiplier: 1
     });
 
-    const stopSorting = useRef(false); // Reference to control the sorting
+    const stopSorting = useRef(false);
 
     useEffect(() => {
+        stopSorting.current = true;
         setState(prevState => ({ ...prevState, data: generateData(state.numItems) }));
     }, [state.numItems]);
 
     const highlightAllBarsSequentially = async () => {
         const delay = 20;
-        
-        // Clear activeIndices to unhighlight all bars
+
         setState(prevState => ({ ...prevState, activeIndices: [] }));
-        
+
         for (let i = 0; i < state.data.length; i++) {
+            if (stopSorting.current) return;
             setState(prevState => ({ ...prevState, completedIndices: [...prevState.completedIndices, i] }));
             await new Promise(resolve => setTimeout(resolve, delay));
         }
     };
 
     const merge = async (arr, start, mid, end) => {
-        // Create a copy of the relevant portion of the array to avoid mutating state directly
+        if (stopSorting.current) return;
+
         const temp = arr.slice(start, end + 1);
         let k = start;
         let i = 0;
@@ -52,15 +54,11 @@ function MergeSort() {
         const delay = computeBaseSpeed() / state.speedMultiplier;
 
         while (i <= mid - start && j <= end - start) {
-            // Highlight the two elements being compared
+            if (stopSorting.current) return;
+
             setState(prevState => ({
                 ...prevState,
                 activeIndices: [start + i, start + j],
-            }));
-
-            // Highlight the elements being moved
-            setState(prevState => ({
-                ...prevState,
                 movingIndices: [k],
             }));
 
@@ -75,43 +73,31 @@ function MergeSort() {
             }
             k++;
 
-            // Update the array state
-            setState(prevState => ({
-                ...prevState,
-                data: [...arr],
-            }));
+            setState(prevState => ({ ...prevState, data: [...arr] }));
 
             await new Promise(resolve => setTimeout(resolve, delay));
         }
 
-        // If there are remaining elements in the left half; add them
         while (i <= mid - start) {
+            if (stopSorting.current) return;
+
             arr[k] = temp[i];
             i++;
             k++;
 
-            // Update the array state
-            setState(prevState => ({
-                ...prevState,
-                data: [...arr],
-                activeIndices: [k - 1],
-            }));
+            setState(prevState => ({ ...prevState, data: [...arr], activeIndices: [k - 1] }));
 
             await new Promise(resolve => setTimeout(resolve, delay));
         }
 
-        // If there are remaining elements in the right half; add them
         while (j <= end - start) {
+            if (stopSorting.current) return;
+
             arr[k] = temp[j];
             j++;
             k++;
 
-            // Update the array state
-            setState(prevState => ({
-                ...prevState,
-                data: [...arr],
-                activeIndices: [k - 1],
-            }));
+            setState(prevState => ({ ...prevState, data: [...arr], activeIndices: [k - 1] }));
 
             await new Promise(resolve => setTimeout(resolve, delay));
         }
@@ -119,34 +105,32 @@ function MergeSort() {
 
     const mergeSort = async (arr, l, r) => {
         if (l < r) {
-            // Find the middle point
             const m = l + parseInt((r - l) / 2);
 
-            // Sort first and second halves
             await mergeSort(arr, l, m);
-            await mergeSort(arr, m + 1, r);
+            if (stopSorting.current) return;
 
-            // Merge the sorted halves
+            await mergeSort(arr, m + 1, r);
+            if (stopSorting.current) return;
+
             await merge(arr, l, m, r);
         }
     };
 
     const startMergeSort = async () => {
+        stopSorting.current = false;
         let arr = [...state.data];
         await mergeSort(arr, 0, arr.length - 1);
-        setState(prevState => ({ ...prevState, data: arr }));
-        highlightAllBarsSequentially();
+        if (!stopSorting.current) {
+            setState(prevState => ({ ...prevState, data: arr }));
+            highlightAllBarsSequentially();
+        }
     };
 
     const handleRandomize = () => {
-        stopSorting.current = true;  // Signal to stop the sorting
-        setState(prevState => ({ ...prevState, data: generateData(state.numItems), activeIndices: [], completedIndices: [] }));
+        stopSorting.current = true;
+        setState(prevState => ({ ...prevState, data: generateData(state.numItems), activeIndices: [], movingIndices: [], completedIndices: [] }));
     };
-
-    useEffect(() => {
-        stopSorting.current = true;  // Signal to stop the sorting
-        setState(prevState => ({ ...prevState, data: generateData(state.numItems), activeIndices: [], completedIndices: [] }));
-    }, [state.numItems]);
 
     const maxNumber = Math.max(...state.data);
     const isMediumScreen = window.innerWidth < 768;
@@ -155,19 +139,19 @@ function MergeSort() {
     return (
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12'>
             <h1 className='text-4xl my-10'>Merge Sort</h1>
-            <div className="flex justify-center items-end max-w-4xl" style={{ height: '400px', width: '90%', gap: '2px' }}>
-            {state.data.map((value, idx) => (
-                <div 
-                    key={idx}
-                    style={{ height: `${(value / maxNumber) * 100}%`, width: `${barWidth}%` }}
-                    className={`
-                        ${state.activeIndices.includes(idx) ? 'bg-customPink' : ''}
-                        ${state.completedIndices.includes(idx) ? 'bg-customPurple' : ''}
-                        ${state.movingIndices.includes(idx) ? 'bg-customBlue' : ''} {/* new line for moving bars */}
-                        ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) && !state.movingIndices.includes(idx) ? 'bg-customLightBlue' : ''}
-                    `}
-                />
-            ))}
+            <div className="flex justify-center items-end max-w-4xl border-2" style={{ height: '400px', width: '90%', gap: '2px' }}>
+                {state.data.map((value, idx) => (
+                    <div 
+                        key={idx}
+                        style={{ height: `${(value / maxNumber) * 100}%`, width: `${barWidth}%` }}
+                        className={`
+                            ${state.activeIndices.includes(idx) ? 'bg-customPink' : ''}
+                            ${state.completedIndices.includes(idx) ? 'bg-customPurple' : ''}
+                            ${state.movingIndices.includes(idx) ? 'bg-customBlue' : ''}
+                            ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) && !state.movingIndices.includes(idx) ? 'bg-customLightBlue' : ''}
+                        `}
+                    />
+                ))}
             </div>
             <div className='flex flex-col-reverse sm:flex-row gap-4 w-full max-w-xl pt-10'>
                 <div className='flex justify-center gap-4 w-full'>
@@ -183,7 +167,6 @@ function MergeSort() {
                             value={state.numItems}
                             onChange={e => {
                                 const value = parseInt(e.target.value, 10);
-                            
                                 if (value < 5) {
                                     setState(prevState => ({ ...prevState, numItems: 5 }));
                                 } else if (isMediumScreen && value > 50) {
