@@ -33,9 +33,9 @@ function MergeSort() {
     }, [state.numItems]);
 
     const highlightAllBarsSequentially = async () => {
-        const delay = 20;
+        const delay = 15;
 
-        setState(prevState => ({ ...prevState, activeIndices: [] }));
+        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [] }));
 
         for (let i = 0; i < state.data.length; i++) {
             if (stopSorting.current) return;
@@ -122,10 +122,15 @@ function MergeSort() {
         let arr = [...state.data];
         await mergeSort(arr, 0, arr.length - 1);
         if (!stopSorting.current) {
-            setState(prevState => ({ ...prevState, data: arr }));
+            setState(prevState => ({ 
+                ...prevState, 
+                data: arr, 
+                movingIndices: [],
+                activeIndices: []
+            }));
             highlightAllBarsSequentially();
         }
-    };
+    };    
 
     const handleRandomize = () => {
         stopSorting.current = true;
