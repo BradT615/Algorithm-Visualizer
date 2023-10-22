@@ -27,9 +27,14 @@ function MergeSort() {
 
     const stopSorting = useRef(false);
 
+    const initialMaxNumber = useRef(Math.max(...state.data));
+
     useEffect(() => {
         stopSorting.current = true;
-        setState(prevState => ({ ...prevState, data: generateData(state.numItems) }));
+        const newData = generateData(state.numItems);
+        setState(prevState => ({ ...prevState, data: newData }));
+        // Step 2: Update initialMaxNumber when data changes
+        initialMaxNumber.current = Math.max(...newData);
     }, [state.numItems]);
 
     const highlightAllBarsSequentially = async () => {
@@ -134,10 +139,12 @@ function MergeSort() {
 
     const handleRandomize = () => {
         stopSorting.current = true;
-        setState(prevState => ({ ...prevState, data: generateData(state.numItems), activeIndices: [], movingIndices: [], completedIndices: [] }));
+        const newData = generateData(state.numItems);
+        setState(prevState => ({ ...prevState, data: newData, activeIndices: [], movingIndices: [], completedIndices: [] }));
+        // Step 2: Update initialMaxNumber when data changes
+        initialMaxNumber.current = Math.max(...newData);
     };
 
-    const maxNumber = Math.max(...state.data);
     const isMediumScreen = window.innerWidth < 768;
     const barWidth = 100 / state.numItems;
 
@@ -148,7 +155,7 @@ function MergeSort() {
                 {state.data.map((value, idx) => (
                     <div 
                         key={idx}
-                        style={{ height: `${(value / maxNumber) * 100}%`, width: `${barWidth}%` }}
+                        style={{ height: `${(value / initialMaxNumber.current) * 100}%`, width: `${barWidth}%` }}
                         className={`
                             ${state.activeIndices.includes(idx) ? 'bg-customPink' : ''}
                             ${state.completedIndices.includes(idx) ? 'bg-customPurple' : ''}
@@ -173,16 +180,16 @@ function MergeSort() {
                             onChange={e => {
                                 const value = parseInt(e.target.value, 10);
                                 if (value < 5) {
-                                    setState(prevState => ({ ...prevState, numItems: 5 }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 5 }));
                                 } else if (isMediumScreen && value > 50) {
-                                    setState(prevState => ({ ...prevState, numItems: 50 }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 50 }));
                                 } else if (!isMediumScreen && value > 100) {
-                                    setState(prevState => ({ ...prevState, numItems: 100 }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 100 }));
                                 } else {
-                                    setState(prevState => ({ ...prevState, numItems: value }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: value }));
                                 }
                             }}                            
-                            className="px-2 py-1 border rounded w-20"
+                            className="px-2 py-1 border rounded w-24"
                             placeholder="Number of items"
                         />
                     </div>
