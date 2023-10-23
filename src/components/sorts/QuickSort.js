@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-function MergeSort() {
+function QuickSort() {
     const shuffleArray = arr => {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -48,83 +48,53 @@ function MergeSort() {
         }
     };
 
-    const merge = async (arr, start, mid, end) => {
-        if (stopSorting.current) return;
-
-        const temp = arr.slice(start, end + 1);
-        let k = start;
-        let i = 0;
-        let j = mid - start + 1;
+    const partition = async (arr, low, high) => {
+        let pivot = arr[high];
+        let i = low - 1;
         const delay = computeBaseSpeed() / state.speedMultiplier;
 
-        while (i <= mid - start && j <= end - start) {
+        for (let j = low; j < high; j++) {
             if (stopSorting.current) return;
 
             setState(prevState => ({
                 ...prevState,
-                activeIndices: [start + i, start + j],
-                movingIndices: [k],
+                activeIndices: [j, high],
+                movingIndices: [i + 1],
             }));
 
             await new Promise(resolve => setTimeout(resolve, delay));
 
-            if (temp[i] < temp[j]) {
-                arr[k] = temp[i];
+            if (arr[j] < pivot) {
                 i++;
-            } else {
-                arr[k] = temp[j];
-                j++;
+                [arr[i], arr[j]] = [arr[j], arr[i]];
             }
-            k++;
 
             setState(prevState => ({ ...prevState, data: [...arr] }));
 
             await new Promise(resolve => setTimeout(resolve, delay));
         }
+        [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
 
-        while (i <= mid - start) {
+        return i + 1;
+    };
+
+    const quickSort = async (arr, low, high) => {
+        if (low < high) {
+            let pi = await partition(arr, low, high);
+
             if (stopSorting.current) return;
 
-            arr[k] = temp[i];
-            i++;
-            k++;
-
-            setState(prevState => ({ ...prevState, data: [...arr], activeIndices: [k - 1] }));
-
-            await new Promise(resolve => setTimeout(resolve, delay));
-        }
-
-        while (j <= end - start) {
+            await quickSort(arr, low, pi - 1);
             if (stopSorting.current) return;
 
-            arr[k] = temp[j];
-            j++;
-            k++;
-
-            setState(prevState => ({ ...prevState, data: [...arr], activeIndices: [k - 1] }));
-
-            await new Promise(resolve => setTimeout(resolve, delay));
+            await quickSort(arr, pi + 1, high);
         }
     };
 
-    const mergeSort = async (arr, l, r) => {
-        if (l < r) {
-            const m = l + parseInt((r - l) / 2);
-
-            await mergeSort(arr, l, m);
-            if (stopSorting.current) return;
-
-            await mergeSort(arr, m + 1, r);
-            if (stopSorting.current) return;
-
-            await merge(arr, l, m, r);
-        }
-    };
-
-    const startMergeSort = async () => {
+    const startQuickSort = async () => {
         stopSorting.current = false;
         let arr = [...state.data];
-        await mergeSort(arr, 0, arr.length - 1);
+        await quickSort(arr, 0, arr.length - 1);
         if (!stopSorting.current) {
             setState(prevState => ({ 
                 ...prevState, 
@@ -134,13 +104,12 @@ function MergeSort() {
             }));
             highlightAllBarsSequentially();
         }
-    };    
+    };
 
     const handleRandomize = () => {
         stopSorting.current = true;
         const newData = generateData(state.numItems);
         setState(prevState => ({ ...prevState, data: newData, activeIndices: [], movingIndices: [], completedIndices: [] }));
-        // Step 2: Update initialMaxNumber when data changes
         initialMaxNumber.current = Math.max(...newData);
     };
 
@@ -149,7 +118,7 @@ function MergeSort() {
 
     return (
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12'>
-            <h1 className='text-4xl my-10'>Merge Sort</h1>
+            <h1 className='text-4xl my-10'>Quick Sort</h1>
             <div className="flex justify-center items-end max-w-4xl border-2" style={{ height: '400px', width: '90%', gap: '2px' }}>
                 {state.data.map((value, idx) => (
                     <div 
@@ -166,7 +135,7 @@ function MergeSort() {
             </div>
             <div className='flex flex-col-reverse sm:flex-row gap-4 w-full max-w-xl pt-10'>
                 <div className='flex justify-center gap-4 w-full'>
-                    <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={startMergeSort}>Sort</button>
+                    <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={startQuickSort}>Sort</button>
                     <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={handleRandomize}>Randomize</button>
                 </div>
                 <div className='flex justify-center gap-4 w-full'>
@@ -213,4 +182,4 @@ function MergeSort() {
     );
 }
 
-export default MergeSort;
+export default QuickSort;
