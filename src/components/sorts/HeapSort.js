@@ -90,7 +90,6 @@ function HeapSort() {
             if (stopSorting.current) return;
 
             [arr[0], arr[i]] = [arr[i], arr[0]]; // swap
-            setState(prevState => ({ ...prevState, data: [...arr], completedIndices: [...prevState.completedIndices, i] }));
 
             await heapify(arr, i, 0);
         }
