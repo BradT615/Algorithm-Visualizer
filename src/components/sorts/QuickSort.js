@@ -114,12 +114,13 @@ function QuickSort() {
     };
 
     const isMediumScreen = window.innerWidth < 768;
+    const isLargeScreen = window.innerWidth < 1280;
     const barWidth = 100 / state.numItems;
 
     return (
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12'>
             <h1 className='text-4xl my-10'>Quick Sort</h1>
-            <div className="flex justify-center items-end max-w-4xl border-2" style={{ height: '400px', width: '90%', gap: '2px' }}>
+            <div className="flex justify-center items-end max-w-4xl border-2" style={{ height: '400px', width: '90%', gap: '1px' }}>
                 {state.data.map((value, idx) => (
                     <div 
                         key={idx}
@@ -151,8 +152,10 @@ function QuickSort() {
                                     setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 5 }));
                                 } else if (isMediumScreen && value > 50) {
                                     setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 50 }));
-                                } else if (!isMediumScreen && value > 100) {
+                                } else if (isLargeScreen && value > 100) {
                                     setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 100 }));
+                                } else if (!isLargeScreen && value > 200) {
+                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 200 }));
                                 } else {
                                     setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: value }));
                                 }
