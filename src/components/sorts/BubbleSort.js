@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 function BubbleSort() {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const gainNode = audioCtx.createGain();
+    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); // 10% of the original volume
+    gainNode.connect(audioCtx.destination);
+
+    useEffect(() => {
+        audioCtx.resume();
+    }, []);
+
     const shuffleArray = arr => {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -16,6 +25,15 @@ function BubbleSort() {
 
     const computeBaseSpeed = () => 1000 / state.numItems;
 
+    const playTone = (value) => {
+        const oscillator = audioCtx.createOscillator();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(value * 10, audioCtx.currentTime);
+        oscillator.connect(gainNode);
+        oscillator.start();
+        return oscillator;
+    };
+
     const [state, setState] = useState({
         numItems: 10,
         data: generateData(10),
@@ -24,7 +42,7 @@ function BubbleSort() {
         speedMultiplier: 1
     });
 
-    const stopSorting = useRef(false); // Reference to control the sorting
+    const stopSorting = useRef(false);
 
     useEffect(() => {
         setState(prevState => ({ ...prevState, data: generateData(state.numItems) }));
@@ -37,18 +55,28 @@ function BubbleSort() {
                 setState(prevState => ({ ...prevState, completedIndices: [...prevState.completedIndices, i] }));
             }, i * delay);
         }
-    };   
+    };
 
     const bubbleSort = async () => {
         let arr = [...state.data];
         const delay = computeBaseSpeed() / state.speedMultiplier;
         stopSorting.current = false;
+
         for (let i = 0; i < arr.length - 1; i++) {
             for (let j = 0; j < arr.length - i - 1; j++) {
                 if (stopSorting.current) return;
 
                 setState(prevState => ({ ...prevState, activeIndices: [j, j + 1] }));
+
+                const oscillator1 = playTone(arr[j]);
+                const oscillator2 = playTone(arr[j + 1]);
+
                 await new Promise(resolve => setTimeout(resolve, delay));
+
+                setTimeout(() => {
+                    oscillator1.stop();
+                    oscillator2.stop();
+                }, delay / 2);
 
                 if (arr[j] > arr[j + 1]) {
                     [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
@@ -61,14 +89,9 @@ function BubbleSort() {
     };
 
     const handleRandomize = () => {
-        stopSorting.current = true;  // Signal to stop the sorting
+        stopSorting.current = true;
         setState(prevState => ({ ...prevState, data: generateData(state.numItems), activeIndices: [], completedIndices: [] }));
     };
-
-    useEffect(() => {
-        stopSorting.current = true;  // Signal to stop the sorting
-        setState(prevState => ({ ...prevState, data: generateData(state.numItems), activeIndices: [], completedIndices: [] }));
-    }, [state.numItems]);
 
     const maxNumber = Math.max(...state.data);
     const isMediumScreen = window.innerWidth < 768;
@@ -104,7 +127,6 @@ function BubbleSort() {
                             value={state.numItems}
                             onChange={e => {
                                 const value = parseInt(e.target.value, 10);
-                            
                                 if (value < 5) {
                                     setState(prevState => ({ ...prevState, numItems: 5 }));
                                 } else if (isMediumScreen && value > 50) {
@@ -114,7 +136,7 @@ function BubbleSort() {
                                 } else {
                                     setState(prevState => ({ ...prevState, numItems: value }));
                                 }
-                            }}                            
+                            }}
                             className="px-2 py-1 border rounded w-20"
                             placeholder="Number of items"
                         />
