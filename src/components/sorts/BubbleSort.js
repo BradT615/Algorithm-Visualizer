@@ -10,6 +10,17 @@ function BubbleSort() {
         audioCtx.resume();
     }, []);
 
+    const activeOscillators = useRef([]);
+
+    const stopAllOscillators = () => {
+        activeOscillators.current.forEach(osc => osc.stop());
+        activeOscillators.current = [];
+    };
+
+    useEffect(() => {
+        return () => stopAllOscillators();  // Cleanup function
+    }, []);
+
     const shuffleArray = arr => {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -28,9 +39,17 @@ function BubbleSort() {
     const playTone = (value) => {
         const oscillator = audioCtx.createOscillator();
         oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(value * 10, audioCtx.currentTime);
+        const frequency = 200 + (1800 * (value / (state.numItems - 1)));
+        oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
         oscillator.connect(gainNode);
         oscillator.start();
+        activeOscillators.current.push(oscillator);
+        oscillator.onended = () => {
+            const index = activeOscillators.current.indexOf(oscillator);
+            if (index > -1) {
+                activeOscillators.current.splice(index, 1);
+            }
+        };
         return oscillator;
     };
 
@@ -90,6 +109,7 @@ function BubbleSort() {
 
     const handleRandomize = () => {
         stopSorting.current = true;
+        stopAllOscillators();
         setState(prevState => ({ ...prevState, data: generateData(state.numItems), activeIndices: [], completedIndices: [] }));
     };
 
@@ -126,6 +146,8 @@ function BubbleSort() {
                             min="1"
                             value={state.numItems}
                             onChange={e => {
+                                stopSorting.current = true;
+                                stopAllOscillators();
                                 const value = parseInt(e.target.value, 10);
                                 if (value < 5) {
                                     setState(prevState => ({ ...prevState, numItems: 5 }));
@@ -145,7 +167,11 @@ function BubbleSort() {
                         <label className="self-center">Speed:</label>
                         <select 
                             value={state.speedMultiplier}
-                            onChange={e => setState(prevState => ({ ...prevState, speedMultiplier: parseFloat(e.target.value) }))}
+                            onChange={e => {
+                                stopSorting.current = true;
+                                stopAllOscillators();
+                                setState(prevState => ({ ...prevState, speedMultiplier: parseFloat(e.target.value) }));
+                            }}
                             className="border rounded">
                             <option value={0.25}>0.25x</option>
                             <option value={0.5}>0.5x</option>
