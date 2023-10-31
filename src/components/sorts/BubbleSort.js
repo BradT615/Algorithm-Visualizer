@@ -1,25 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 function BubbleSort() {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const gainNode = audioCtx.createGain();
-    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); // 10% of the original volume
-    gainNode.connect(audioCtx.destination);
-
-    useEffect(() => {
-        audioCtx.resume();
-    }, []);
-
-    const activeOscillators = useRef([]);
-
-    const stopAllOscillators = () => {
-        activeOscillators.current.forEach(osc => osc.stop());
-        activeOscillators.current = [];
-    };
-
-    useEffect(() => {
-        return () => stopAllOscillators();  // Cleanup function
-    }, []);
 
     const shuffleArray = arr => {
         for (let i = arr.length - 1; i > 0; i--) {
@@ -36,22 +17,7 @@ function BubbleSort() {
 
     const computeBaseSpeed = () => 1000 / state.numItems;
 
-    const playTone = (value) => {
-        const oscillator = audioCtx.createOscillator();
-        oscillator.type = 'sine';
-        const frequency = 200 + (1800 * (value / (state.numItems - 1)));
-        oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-        oscillator.connect(gainNode);
-        oscillator.start();
-        activeOscillators.current.push(oscillator);
-        oscillator.onended = () => {
-            const index = activeOscillators.current.indexOf(oscillator);
-            if (index > -1) {
-                activeOscillators.current.splice(index, 1);
-            }
-        };
-        return oscillator;
-    };
+    
 
     const [state, setState] = useState({
         numItems: 10,
@@ -87,15 +53,7 @@ function BubbleSort() {
 
                 setState(prevState => ({ ...prevState, activeIndices: [j, j + 1] }));
 
-                const oscillator1 = playTone(arr[j]);
-                const oscillator2 = playTone(arr[j + 1]);
-
                 await new Promise(resolve => setTimeout(resolve, delay));
-
-                setTimeout(() => {
-                    oscillator1.stop();
-                    oscillator2.stop();
-                }, delay / 2);
 
                 if (arr[j] > arr[j + 1]) {
                     [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
@@ -109,7 +67,6 @@ function BubbleSort() {
 
     const handleRandomize = () => {
         stopSorting.current = true;
-        stopAllOscillators();
         setState(prevState => ({ ...prevState, data: generateData(state.numItems), activeIndices: [], completedIndices: [] }));
     };
 
@@ -147,7 +104,6 @@ function BubbleSort() {
                             value={state.numItems}
                             onChange={e => {
                                 stopSorting.current = true;
-                                stopAllOscillators();
                                 const value = parseInt(e.target.value, 10);
                                 if (value < 5) {
                                     setState(prevState => ({ ...prevState, numItems: 5 }));
@@ -169,7 +125,6 @@ function BubbleSort() {
                             value={state.speedMultiplier}
                             onChange={e => {
                                 stopSorting.current = true;
-                                stopAllOscillators();
                                 setState(prevState => ({ ...prevState, speedMultiplier: parseFloat(e.target.value) }));
                             }}
                             className="border rounded">
