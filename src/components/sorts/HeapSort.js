@@ -124,7 +124,7 @@ function HeapSort() {
     return (
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12'>
             <h1 className='text-4xl my-10'>Heap Sort</h1>
-            <div className="flex justify-center items-end max-w-4xl border-2" style={{ height: '400px', width: '90%', gap: '1px' }}>
+            <div className="flex items-end max-w-6xl" style={{ height: '400px', width: '90%', gap: '1px' }}>
                 {state.data.map((value, idx) => (
                     <div 
                         key={idx}
