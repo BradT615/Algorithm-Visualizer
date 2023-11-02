@@ -4,6 +4,7 @@ import SelectionSort from './sorts/SelectionSort';
 import MergeSort from './sorts/MergeSort';
 import QuickSort from './sorts/QuickSort';
 import HeapSort from './sorts/HeapSort.js';
+import TimSort from './sorts/TimSort.js';
 // Import other visualizers as you create them
 
 const AlgorithmComponents = {
@@ -13,6 +14,7 @@ const AlgorithmComponents = {
     MergeSort: MergeSort,
     QuickSort: QuickSort,
     HeapSort: HeapSort,
+    TimSort: TimSort,
     // ... other algorithms
 };
 
