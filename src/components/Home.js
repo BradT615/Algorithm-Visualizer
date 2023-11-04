@@ -4,10 +4,13 @@ import logo from '../assets/logo-removebg.png';
 
 function Home() {
     const algorithmNames = [
-        "BubbleSort", "InsertionSort", "SelectionSort", "MergeSort",
-        "QuickSort", "HeapSort", "TimSort", "ShellSort",
-        "CountingSort", "RadixSort", "BucketSort", "PigeonholeSort"
-    ];
+        "BubbleSort", "CocktailSort", "QuickSort", "CombSort",
+        "InsertionSort", "ShellSort", "GnomeSort", "PatienceSorting",
+        "SelectionSort", "HeapSort",
+        "MergeSort", "TimSort",
+        "CountingSort", "BucketSort", "RadixSort",
+        "BogoSort"
+    ];    
 
     return (
         <div className="h-full max-w-7xl m-auto flex flex-col justify-center items-center">
