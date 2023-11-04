@@ -9,6 +9,8 @@ import ShellSort from './sorts/ShellSort.js';
 import CountingSort from './sorts/CountingSort.js';
 import CocktailSort from './sorts/CocktailSort.js';
 import CombSort from './sorts/CombSort.js';
+import GnomeSort from './sorts/GnomeSort.js';
+import PatienceSort from './sorts/PatienceSort.js';
 // Import other visualizers as you create them
 
 const AlgorithmComponents = {
@@ -23,6 +25,8 @@ const AlgorithmComponents = {
     CountingSort: CountingSort,
     CocktailSort: CocktailSort,
     CombSort: CombSort,
+    GnomeSort: GnomeSort,
+    PatienceSort: PatienceSort,
     // ... other algorithms
 };
 
