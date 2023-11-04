@@ -6,6 +6,7 @@ import QuickSort from './sorts/QuickSort';
 import HeapSort from './sorts/HeapSort.js';
 import TimSort from './sorts/TimSort.js';
 import ShellSort from './sorts/ShellSort.js';
+import CountingSort from './sorts/CountingSort.js';
 // Import other visualizers as you create them
 
 const AlgorithmComponents = {
@@ -17,6 +18,7 @@ const AlgorithmComponents = {
     HeapSort: HeapSort,
     TimSort: TimSort,
     ShellSort: ShellSort,
+    CountingSort: CountingSort,
     // ... other algorithms
 };
 
