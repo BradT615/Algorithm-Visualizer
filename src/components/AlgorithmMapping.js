@@ -13,6 +13,7 @@ import GnomeSort from './sorts/GnomeSort.js';
 import PatienceSort from './sorts/PatienceSort.js';
 import BucketSort from './sorts/BucketSort.js';
 import RadixSort from './sorts/RadixSort.js';
+import BogoSort from './sorts/BogoSort.js';
 // Import other visualizers as you create them
 
 const AlgorithmComponents = {
@@ -31,6 +32,7 @@ const AlgorithmComponents = {
     PatienceSort: PatienceSort,
     BucketSort: BucketSort,
     RadixSort: RadixSort,
+    BogoSort: BogoSort
     // ... other algorithms
 };
 
