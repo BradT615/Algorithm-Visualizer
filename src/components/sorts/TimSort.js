@@ -35,13 +35,15 @@ function TimSort() {
         initialMaxNumber.current = Math.max(...newData);
     }, [state.numItems]);
 
-    const highlightAllBarsSequentially = async () => {
-        const delay = 15;
-
+    const highlightAllBarsSequentially = async (totalTime = 1000) => {
+        const numBars = state.data.length;
+        const delay = totalTime / numBars;
+    
         setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [] }));
-
-        for (let i = 0; i < state.data.length; i++) {
+    
+        for (let i = 0; i < numBars; i++) {
             if (stopSorting.current) return;
+    
             setState(prevState => ({ ...prevState, completedIndices: [...prevState.completedIndices, i] }));
             await new Promise(resolve => setTimeout(resolve, delay));
         }

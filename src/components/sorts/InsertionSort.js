@@ -30,14 +30,19 @@ function InsertionSort() {
         setState(prevState => ({ ...prevState, data: generateData(state.numItems) }));
     }, [state.numItems]);
 
-    const highlightAllBarsSequentially = async () => {
-        const delay = 20;
-        setState(prevState => ({ ...prevState, activeIndices: [] }));
-        for (let i = 0; i < state.data.length; i++) {
+    const highlightAllBarsSequentially = async (totalTime = 1000) => {
+        const numBars = state.data.length;
+        const delay = totalTime / numBars;
+    
+        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [] }));
+    
+        for (let i = 0; i < numBars; i++) {
+            if (stopSorting.current) return;
+    
             setState(prevState => ({ ...prevState, completedIndices: [...prevState.completedIndices, i] }));
             await new Promise(resolve => setTimeout(resolve, delay));
         }
-    };    
+    };  
 
     const insertionSort = async () => {
         let arr = [...state.data];

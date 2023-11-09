@@ -31,12 +31,17 @@ function CocktailSort() {
         setState(prevState => ({ ...prevState, data: generateData(state.numItems) }));
     }, [state.numItems]);
 
-    const highlightAllBarsSequentially = () => {
-        const delay = 20;
-        for (let i = 0; i < state.data.length; i++) {
-            setTimeout(() => {
-                setState(prevState => ({ ...prevState, completedIndices: [...prevState.completedIndices, i] }));
-            }, i * delay);
+    const highlightAllBarsSequentially = async (totalTime = 1000) => {
+        const numBars = state.data.length;
+        const delay = totalTime / numBars;
+    
+        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [] }));
+    
+        for (let i = 0; i < numBars; i++) {
+            if (stopSorting.current) return;
+    
+            setState(prevState => ({ ...prevState, completedIndices: [...prevState.completedIndices, i] }));
+            await new Promise(resolve => setTimeout(resolve, delay));
         }
     };
 
