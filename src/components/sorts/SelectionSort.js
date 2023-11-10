@@ -78,9 +78,17 @@ function SelectionSort() {
         highlightAllBarsSequentially();
     };
 
-    const handleRandomize = () => {
-        stopSorting.current = true;  // Signal to stop the sorting
-        setState(prevState => ({ ...prevState, data: generateData(state.numItems), activeIndices: [], completedIndices: [] }));
+    const handleRandomize = async () => {
+        stopSorting.current = true;
+    
+        await new Promise(resolve => setTimeout(resolve, 2*computeBaseSpeed()));
+
+        setState(prevState => ({
+            ...prevState,
+            data: generateData(state.numItems),
+            activeIndices: [],
+            completedIndices: []
+        }));
     };
 
     useEffect(() => {

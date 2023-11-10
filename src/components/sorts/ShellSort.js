@@ -91,10 +91,19 @@ function ShellSort() {
         }
     };
 
-    const handleRandomize = () => {
+    const handleRandomize = async () => {
         stopSorting.current = true;
         const newData = generateData(state.numItems);
-        setState(prevState => ({ ...prevState, data: newData, activeIndices: [], movingIndices: [], completedIndices: [] }));
+    
+        await new Promise(resolve => setTimeout(resolve, 2*computeBaseSpeed()));
+
+        setState(prevState => ({
+            ...prevState,
+            data: generateData(state.numItems),
+            activeIndices: [],
+            movingIndices: [],
+            completedIndices: []
+        }));
         initialMaxNumber.current = Math.max(...newData);
     };
 

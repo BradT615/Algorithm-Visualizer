@@ -71,9 +71,17 @@ function GnomeSort() {
         highlightAllBarsSequentially();
     };
 
-    const handleRandomize = () => {
+    const handleRandomize = async () => {
         stopSorting.current = true;
-        setState(prevState => ({ ...prevState, data: generateData(state.numItems), activeIndices: [], completedIndices: [] }));
+    
+        await new Promise(resolve => setTimeout(resolve, 2*computeBaseSpeed()));
+
+        setState(prevState => ({
+            ...prevState,
+            data: generateData(state.numItems),
+            activeIndices: [],
+            completedIndices: []
+        }));
     };
 
     const maxNumber = Math.max(...state.data);
