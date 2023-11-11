@@ -117,13 +117,13 @@ function BubbleSort() {
                                 stopSorting.current = true;
                                 const value = parseInt(e.target.value, 10);
                                 if (value < 5) {
-                                    setState(prevState => ({ ...prevState, numItems: 5 }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], numItems: 5 }));
                                 } else if (isMediumScreen && value > 50) {
-                                    setState(prevState => ({ ...prevState, numItems: 50 }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], numItems: 50 }));
                                 } else if (!isMediumScreen && value > 100) {
-                                    setState(prevState => ({ ...prevState, numItems: 100 }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], numItems: 100 }));
                                 } else {
-                                    setState(prevState => ({ ...prevState, numItems: value }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], numItems: value }));
                                 }
                             }}
                             className="px-2 py-1 border rounded w-20"
@@ -136,7 +136,7 @@ function BubbleSort() {
                             value={state.speedMultiplier}
                             onChange={e => {
                                 stopSorting.current = true;
-                                setState(prevState => ({ ...prevState, speedMultiplier: parseFloat(e.target.value) }));
+                                setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], speedMultiplier: parseFloat(e.target.value) }));
                             }}
                             className="border rounded">
                             <option value={0.25}>0.25x</option>
