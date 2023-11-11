@@ -15,7 +15,6 @@ function BubbleSort() {
         return numbers;
     };
 
-    const computeBaseSpeed = () => 1000 / state.numItems;
 
     const [state, setState] = useState({
         numItems: 10,
@@ -24,6 +23,15 @@ function BubbleSort() {
         completedIndices: [],
         speedMultiplier: 1
     });
+
+    const computeBaseSpeed = () => 1000 / state.numItems;
+    const delay = computeBaseSpeed() / state.speedMultiplier;
+
+    // const stopSort = async () => {
+    //     stopSorting.current = true;
+    //     await new Promise(resolve => setTimeout(resolve, 2 * delay));
+    //     setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [] }));
+    // };
 
     const stopSorting = useRef(false);
 
@@ -46,8 +54,13 @@ function BubbleSort() {
     };
 
     const bubbleSort = async () => {
+        if(!stopSorting.current) {
+            stopSorting.current = true;
+            setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: []}));
+            return;
+        }
+
         let arr = [...state.data];
-        const delay = computeBaseSpeed() / state.speedMultiplier;
         stopSorting.current = false;
 
         for (let i = 0; i < arr.length - 1; i++) {
