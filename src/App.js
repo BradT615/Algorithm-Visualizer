@@ -10,7 +10,7 @@ function App() {
         <Router>
             <div className='grid grid-rows-[auto,1fr] bg-customDarkBlue min-h-screen text-customGray'>
                 <Navbar />
-                <div className="flex flex-col justify-center items-center h-full w-full"> {/* Full height flex container */}
+                <div className="flex flex-col justify-center items-center h-full w-full">
                     <Routes>
                         <Route path="/" element={<Home />} />
                         {Object.keys(AlgorithmComponents).map(algoName => (

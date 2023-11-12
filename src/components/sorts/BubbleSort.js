@@ -8,13 +8,11 @@ function BubbleSort() {
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
     };
-
     const generateData = length => {
         const numbers = Array.from({ length }, (_, i) => i + 1);
         shuffleArray(numbers);
         return numbers;
     };
-
 
     const [state, setState] = useState({
         numItems: 10,
@@ -26,14 +24,7 @@ function BubbleSort() {
 
     const computeBaseSpeed = () => 1000 / state.numItems;
     const delay = computeBaseSpeed() / state.speedMultiplier;
-
-    // const stopSort = async () => {
-    //     stopSorting.current = true;
-    //     await new Promise(resolve => setTimeout(resolve, 2 * delay));
-    //     setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [] }));
-    // };
-
-    const stopSorting = useRef(false);
+    const stopSorting = useRef(true);
 
     useEffect(() => {
         setState(prevState => ({ ...prevState, data: generateData(state.numItems) }));
@@ -43,7 +34,7 @@ function BubbleSort() {
         const numBars = state.data.length;
         const delay = totalTime / numBars;
     
-        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [] }));
+        setState(prevState => ({ ...prevState, activeIndices: []}));
     
         for (let i = 0; i < numBars; i++) {
             if (stopSorting.current) return;
@@ -114,7 +105,7 @@ function BubbleSort() {
                     />
                 ))}
             </div>
-            <div className='flex flex-col-reverse sm:flex-row gap-4 w-full max-w-xl pt-10'>
+            <div className='flex flex-col-reverse sm:flex-row gap-4 w-full max-w-xl py-10'>
                 <div className='flex justify-center gap-4 w-full'>
                     <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={bubbleSort}>Sort</button>
                     <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={handleRandomize}>Randomize</button>

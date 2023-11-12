@@ -122,7 +122,7 @@ function BucketSort() {
                     />
                 ))}
             </div>
-            <div className='flex flex-col-reverse sm:flex-row gap-4 w-full max-w-xl pt-10'>
+            <div className='flex flex-col-reverse sm:flex-row gap-4 w-full max-w-xl py-10'>
                 <div className='flex justify-center gap-4 w-full'>
                     <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={startBucketSort}>Sort</button>
                     <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={handleRandomize}>Randomize</button>
