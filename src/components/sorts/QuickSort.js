@@ -7,14 +7,11 @@ function QuickSort() {
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
     };
-
     const generateData = length => {
         const numbers = Array.from({ length }, (_, i) => i + 1);
         shuffleArray(numbers);
         return numbers;
     };
-
-    const computeBaseSpeed = () => 4000 / state.numItems;
 
     const [state, setState] = useState({
         numItems: 50,
@@ -25,12 +22,13 @@ function QuickSort() {
         speedMultiplier: 1
     });
 
+    const computeBaseSpeed = () => 4000 / state.numItems;
+    const delay = computeBaseSpeed() / state.speedMultiplier;
     const stopSorting = useRef(false);
-
     const initialMaxNumber = useRef(Math.max(...state.data));
 
     useEffect(() => {
-        stopSorting.current = true;
+        // stopSorting.current = true;
         const newData = generateData(state.numItems);
         setState(prevState => ({ ...prevState, data: newData }));
         initialMaxNumber.current = Math.max(...newData);
@@ -53,7 +51,6 @@ function QuickSort() {
     const partition = async (arr, low, high) => {
         let pivot = arr[high];
         let i = low - 1;
-        const delay = computeBaseSpeed() / state.speedMultiplier;
 
         for (let j = low; j < high; j++) {
             if (stopSorting.current) return;
@@ -158,6 +155,7 @@ function QuickSort() {
                             min="1"
                             value={state.numItems}
                             onChange={e => {
+                                stopSorting.current = true;
                                 const value = parseInt(e.target.value, 10);
                                 if (value < 5) {
                                     setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 5 }));

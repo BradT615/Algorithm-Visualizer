@@ -28,7 +28,8 @@ function CocktailSort() {
     const stopSorting = useRef(true);
 
     useEffect(() => {
-        setState(prevState => ({ ...prevState, data: generateData(state.numItems) }));
+        stopSorting.current = true;
+        setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], data: generateData(state.numItems) }));
     }, [state.numItems]);
 
     const highlightAllBarsSequentially = async (totalTime = 1000) => {
@@ -47,6 +48,7 @@ function CocktailSort() {
 
     const cocktailSort = async () => {
         if(!stopSorting.current) {
+            await new Promise(resolve => setTimeout(resolve, delay));
             stopSorting.current = true;
             setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: []}));
             return;

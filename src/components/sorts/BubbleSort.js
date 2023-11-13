@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 function BubbleSort() {
-
     const shuffleArray = arr => {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -27,7 +26,8 @@ function BubbleSort() {
     const stopSorting = useRef(true);
 
     useEffect(() => {
-        setState(prevState => ({ ...prevState, data: generateData(state.numItems) }));
+        stopSorting.current = true;
+        setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], data: generateData(state.numItems) }));
     }, [state.numItems]);
 
     const highlightAllBarsSequentially = async (totalTime = 1000) => {
@@ -46,6 +46,7 @@ function BubbleSort() {
 
     const bubbleSort = async () => {
         if(!stopSorting.current) {
+            await new Promise(resolve => setTimeout(resolve, delay));
             stopSorting.current = true;
             setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: []}));
             return;
@@ -59,13 +60,14 @@ function BubbleSort() {
                 if (stopSorting.current) return;
 
                 setState(prevState => ({ ...prevState, activeIndices: [j, j + 1] }));
-
                 await new Promise(resolve => setTimeout(resolve, delay));
 
+                if (stopSorting.current) return;
                 if (arr[j] > arr[j + 1]) {
                     [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
                     setState(prevState => ({ ...prevState, data: arr }));
                     await new Promise(resolve => setTimeout(resolve, delay));
+                    if (stopSorting.current) return;
                 }
             }
         }
@@ -118,7 +120,6 @@ function BubbleSort() {
                             min="1"
                             value={state.numItems}
                             onChange={e => {
-                                stopSorting.current = true;
                                 const value = parseInt(e.target.value, 10);
                                 if (value < 5) {
                                     setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], numItems: 5 }));
