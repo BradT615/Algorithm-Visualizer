@@ -24,13 +24,13 @@ function QuickSort() {
 
     const computeBaseSpeed = () => 4000 / state.numItems;
     const delay = computeBaseSpeed() / state.speedMultiplier;
-    const stopSorting = useRef(false);
+    const stopSorting = useRef(true);
     const initialMaxNumber = useRef(Math.max(...state.data));
 
     useEffect(() => {
         // stopSorting.current = true;
         const newData = generateData(state.numItems);
-        setState(prevState => ({ ...prevState, data: newData }));
+        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], data: generateData(state.numItems) }));
         initialMaxNumber.current = Math.max(...newData);
     }, [state.numItems]);
 
@@ -91,6 +91,12 @@ function QuickSort() {
     };
 
     const startQuickSort = async () => {
+        if(!stopSorting.current) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            stopSorting.current = true;
+            setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: []}));
+            return;
+        }
         stopSorting.current = false;
         let arr = [...state.data];
         await quickSort(arr, 0, arr.length - 1);
