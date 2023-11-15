@@ -1,21 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 function CombSort() {
-
     const shuffleArray = arr => {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
     };
-
     const generateData = length => {
         const numbers = Array.from({ length }, (_, i) => i + 1);
         shuffleArray(numbers);
         return numbers;
     };
 
-    const computeBaseSpeed = () => 1000 / state.numItems;
 
     const [state, setState] = useState({
         numItems: 10,
@@ -25,17 +22,19 @@ function CombSort() {
         speedMultiplier: 1
     });
 
-    const stopSorting = useRef(false);
+    const computeBaseSpeed = () => 1000 / state.numItems;
+    const delay = computeBaseSpeed() / state.speedMultiplier;
+    const stopSorting = useRef(true);
 
     useEffect(() => {
-        setState(prevState => ({ ...prevState, data: generateData(state.numItems) }));
+        stopSorting.current = true;
+        setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], data: generateData(state.numItems) }));
     }, [state.numItems]);
 
     const highlightAllBarsSequentially = async (totalTime = 1000) => {
         const numBars = state.data.length;
-        const delay = totalTime / numBars;
     
-        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [] }));
+        setState(prevState => ({ ...prevState, activeIndices: [] }));
     
         for (let i = 0; i < numBars; i++) {
             if (stopSorting.current) return;
@@ -46,8 +45,14 @@ function CombSort() {
     };
 
     const combSort = async () => {
+        if(!stopSorting.current) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            stopSorting.current = true;
+            setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: []}));
+            return;
+        }
+
         let arr = [...state.data];
-        const delay = computeBaseSpeed() / state.speedMultiplier;
         stopSorting.current = false;
 
         let gap = arr.length;
@@ -68,8 +73,10 @@ function CombSort() {
 
                 if (arr[i] > arr[i + gap]) {
                     [arr[i], arr[i + gap]] = [arr[i + gap], arr[i]];
+                    if (stopSorting.current) return;
                     setState(prevState => ({ ...prevState, data: arr }));
                     await new Promise(resolve => setTimeout(resolve, delay));
+                    if (stopSorting.current) return;
                     if (gap === 1) {
                         sorted = false;
                     }
