@@ -101,6 +101,7 @@ function QuickSort() {
             setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: []}));
             return;
         }
+        
         stopSorting.current = false;
         let arr = [...state.data];
         await quickSort(arr, 0, arr.length - 1);

@@ -7,32 +7,31 @@ function ShellSort() {
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
     };
-
     const generateData = length => {
         const numbers = Array.from({ length }, (_, i) => i + 1);
         shuffleArray(numbers);
         return numbers;
     };
 
-    const computeBaseSpeed = () => 4000 / state.numItems;
 
     const [state, setState] = useState({
-        numItems: 50,
-        data: generateData(50),
+        numItems: 25,
+        data: generateData(25),
         activeIndices: [],
         movingIndices: [],
         completedIndices: [],
         speedMultiplier: 1
     });
 
-    const stopSorting = useRef(false);
-
+    const computeBaseSpeed = () => 1000 / state.numItems;
+    const delay = computeBaseSpeed() / state.speedMultiplier;
+    const stopSorting = useRef(true);
     const initialMaxNumber = useRef(Math.max(...state.data));
 
     useEffect(() => {
         stopSorting.current = true;
         const newData = generateData(state.numItems);
-        setState(prevState => ({ ...prevState, data: newData }));
+        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], data: newData }));
         initialMaxNumber.current = Math.max(...newData);
     }, [state.numItems]);
 
@@ -53,12 +52,12 @@ function ShellSort() {
     const shellSort = async (arr) => {
         const n = arr.length;
         let gap = Math.floor(n / 2);
-        const delay = computeBaseSpeed() / state.speedMultiplier;
 
         while (gap > 0) {
             for (let i = gap; i < n; i++) {
                 let temp = arr[i];
                 let j;
+                if (stopSorting.current) return;
                 setState(prevState => ({ ...prevState, activeIndices: [i] }));
                 await new Promise(resolve => setTimeout(resolve, delay));
 
@@ -70,6 +69,7 @@ function ShellSort() {
                     await new Promise(resolve => setTimeout(resolve, delay));
                 }
 
+                if (stopSorting.current) return;
                 arr[j] = temp;
             }
             gap = Math.floor(gap / 2);
@@ -77,6 +77,13 @@ function ShellSort() {
     };
 
     const startShellSort = async () => {
+        if(!stopSorting.current) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            stopSorting.current = true;
+            setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: []}));
+            return;
+        }
+
         stopSorting.current = false;
         let arr = [...state.data];
         await shellSort(arr);
