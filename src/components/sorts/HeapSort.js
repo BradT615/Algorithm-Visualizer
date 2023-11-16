@@ -14,7 +14,7 @@ function HeapSort() {
         return numbers;
     };
 
-    const computeBaseSpeed = () => 4000 / state.numItems;
+    const computeBaseSpeed = () => 1000 / state.numItems;
 
     const [state, setState] = useState({
         numItems: 50,

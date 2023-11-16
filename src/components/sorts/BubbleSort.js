@@ -14,8 +14,8 @@ function BubbleSort() {
     };
 
     const [state, setState] = useState({
-        numItems: 10,
-        data: generateData(10),
+        numItems: 25,
+        data: generateData(25),
         activeIndices: [],
         completedIndices: [],
         speedMultiplier: 1

@@ -14,8 +14,8 @@ function QuickSort() {
     };
 
     const [state, setState] = useState({
-        numItems: 50,
-        data: generateData(50),
+        numItems: 25,
+        data: generateData(25),
         activeIndices: [],
         movingIndices: [],
         completedIndices: [],
@@ -30,7 +30,7 @@ function QuickSort() {
     useEffect(() => {
         stopSorting.current = true;
         const newData = generateData(state.numItems);
-        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], data: generateData(state.numItems) }));
+        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], data: newData }));
         initialMaxNumber.current = Math.max(...newData);
     }, [state.numItems]);
 

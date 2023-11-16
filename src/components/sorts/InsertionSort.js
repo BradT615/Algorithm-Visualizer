@@ -7,34 +7,34 @@ function InsertionSort() {
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
     };
-
     const generateData = length => {
         const numbers = Array.from({ length }, (_, i) => i + 1);
         shuffleArray(numbers);
         return numbers;
     };
 
-    const computeBaseSpeed = () => 1000 / state.numItems;
-
     const [state, setState] = useState({
-        numItems: 10,
-        data: generateData(10),
+        numItems: 25,
+        data: generateData(25),
         activeIndices: [],
         completedIndices: [],
         speedMultiplier: 1
     });
 
-    const stopSorting = useRef(false); // Reference to control the sorting
+    const computeBaseSpeed = () => 1000 / state.numItems;
+    const delay = computeBaseSpeed() / state.speedMultiplier;
+    const stopSorting = useRef(true);
 
     useEffect(() => {
-        setState(prevState => ({ ...prevState, data: generateData(state.numItems) }));
+        stopSorting.current = true;
+        setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], data: generateData(state.numItems) }));
     }, [state.numItems]);
 
     const highlightAllBarsSequentially = async (totalTime = 1000) => {
         const numBars = state.data.length;
         const delay = totalTime / numBars;
     
-        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [] }));
+        setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [] }));
     
         for (let i = 0; i < numBars; i++) {
             if (stopSorting.current) return;
@@ -45,8 +45,14 @@ function InsertionSort() {
     };  
 
     const insertionSort = async () => {
+        if(!stopSorting.current) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            stopSorting.current = true;
+            setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: []}));
+            return;
+        }
+
         let arr = [...state.data];
-        const delay = computeBaseSpeed() / state.speedMultiplier;
         stopSorting.current = false;
     
         for (let i = 1; i < arr.length; i++) {
@@ -67,9 +73,11 @@ function InsertionSort() {
                 arr[j + 1] = arr[j];
                 j = j - 1;
     
+                if (stopSorting.current) return;
                 // Update the data array to reflect the swap
                 setState(prevState => ({ ...prevState, data: arr }));
                 await new Promise(resolve => setTimeout(resolve, delay));
+                if (stopSorting.current) return;
             }
             arr[j + 1] = key;
         }
@@ -90,8 +98,8 @@ function InsertionSort() {
     };
 
     useEffect(() => {
-        stopSorting.current = true;  // Signal to stop the sorting
-        setState(prevState => ({ ...prevState, data: generateData(state.numItems), activeIndices: [], completedIndices: [] }));
+        stopSorting.current = true;
+        setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], data: generateData(state.numItems) }));
     }, [state.numItems]);
 
     const maxNumber = Math.max(...state.data);
