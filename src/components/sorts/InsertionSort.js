@@ -97,10 +97,6 @@ function InsertionSort() {
         }));
     };
 
-    useEffect(() => {
-        stopSorting.current = true;
-        setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], data: generateData(state.numItems) }));
-    }, [state.numItems]);
 
     const maxNumber = Math.max(...state.data);
     const isMediumScreen = window.innerWidth < 768;
