@@ -7,32 +7,31 @@ function HeapSort() {
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
     };
-
     const generateData = length => {
         const numbers = Array.from({ length }, (_, i) => i + 1);
         shuffleArray(numbers);
         return numbers;
     };
 
-    const computeBaseSpeed = () => 1000 / state.numItems;
 
     const [state, setState] = useState({
-        numItems: 50,
-        data: generateData(50),
+        numItems: 25,
+        data: generateData(25),
         activeIndices: [],
         movingIndices: [],
         completedIndices: [],
         speedMultiplier: 1
     });
 
-    const stopSorting = useRef(false);
-
+    const computeBaseSpeed = () => 1000 / state.numItems;
+    const delay = computeBaseSpeed() / state.speedMultiplier;
+    const stopSorting = useRef(true);
     const initialMaxNumber = useRef(Math.max(...state.data));
 
     useEffect(() => {
         stopSorting.current = true;
         const newData = generateData(state.numItems);
-        setState(prevState => ({ ...prevState, data: newData }));
+        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], data: newData }));
         initialMaxNumber.current = Math.max(...newData);
     }, [state.numItems]);
 
@@ -54,7 +53,6 @@ function HeapSort() {
         let largest = i;
         const left = 2 * i + 1;
         const right = 2 * i + 2; 
-        const delay = computeBaseSpeed() / state.speedMultiplier;
 
         if (left < n && arr[left] > arr[largest])
             largest = left;
@@ -74,7 +72,8 @@ function HeapSort() {
             await new Promise(resolve => setTimeout(resolve, delay));
 
             [arr[i], arr[largest]] = [arr[largest], arr[i]]; // swap
-
+            
+            if (stopSorting.current) return;
             setState(prevState => ({ ...prevState, data: [...arr] }));
 
             await new Promise(resolve => setTimeout(resolve, delay));
@@ -98,6 +97,13 @@ function HeapSort() {
     };
 
     const startHeapSort = async () => {
+        if(!stopSorting.current) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            stopSorting.current = true;
+            setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: []}));
+            return;
+        }
+
         stopSorting.current = false;
         let arr = [...state.data];
         await heapSort(arr);
