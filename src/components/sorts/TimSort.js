@@ -7,31 +7,30 @@ function TimSort() {
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
     };
-
     const generateData = length => {
         const numbers = Array.from({ length }, (_, i) => i + 1);
         shuffleArray(numbers);
         return numbers;
     };
 
-    const computeBaseSpeed = () => 20000 / state.numItems;
-
     const [state, setState] = useState({
-        numItems: 50,
-        data: generateData(50),
+        numItems: 25,
+        data: generateData(25),
         activeIndices: [],
         movingIndices: [],
         completedIndices: [],
         speedMultiplier: 1
     });
 
-    const stopSorting = useRef(false);
+    const computeBaseSpeed = () => 2000 / state.numItems;
+    const delay = computeBaseSpeed() / state.speedMultiplier;
+    const stopSorting = useRef(true);
     const initialMaxNumber = useRef(Math.max(...state.data));
 
     useEffect(() => {
         stopSorting.current = true;
         const newData = generateData(state.numItems);
-        setState(prevState => ({ ...prevState, data: newData }));
+        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], data: newData }));
         initialMaxNumber.current = Math.max(...newData);
     }, [state.numItems]);
 
@@ -50,28 +49,32 @@ function TimSort() {
     };
 
     // TimSort Implementation
-    const MIN_RUN = 32;
+    const MIN_RUN = Math.floor(state.numItems / 4);
+
 
     const insertionSort = async (arr, left, right) => {
         for (let i = left + 1; i <= right; i++) {
             const key = arr[i];
             let j = i - 1;
-
+    
             while (j >= left && arr[j] > key) {
                 arr[j + 1] = arr[j];
                 j--;
+    
+                // Update active and moving indices
+                if (stopSorting.current) return;
+                setState(prevState => ({...prevState,  data: [...arr],  activeIndices: [i, j + 1]}));
+                await new Promise(resolve => setTimeout(resolve, delay));
             }
             arr[j + 1] = key;
-
-            // Visualization
-            setState(prevState => ({
-                ...prevState,
-                data: [...arr],
-                activeIndices: [i, j + 1]
-            }));
-            await new Promise(resolve => setTimeout(resolve, computeBaseSpeed() / state.speedMultiplier));
+    
+            // Final update after insertion
+            if (stopSorting.current) return;
+            setState(prevState => ({...prevState, data: [...arr], activeIndices: [i], movingIndices: []}));
+            await new Promise(resolve => setTimeout(resolve, delay));
         }
     };
+    
 
     const merge = async (arr, l, m, r) => {
         if (r <= l || m < l || m > r) {
@@ -95,34 +98,27 @@ function TimSort() {
                 j++;
             }
             k++;
-            setState(prevState => ({
-                ...prevState,
-                data: [...arr],
-                activeIndices: [k]
-            }));
-            await new Promise(resolve => setTimeout(resolve, computeBaseSpeed() / state.speedMultiplier));
+            if (stopSorting.current) return;
+            setState(prevState => ({...prevState,  data: [...arr],  activeIndices: [k], movingIndices: [l + i, m + 1 + j]}));
+            await new Promise(resolve => setTimeout(resolve, delay));
         }
 
         while (i < len1) {
             arr[k] = left[i];
-            k++; i++;
-            setState(prevState => ({
-                ...prevState,
-                data: [...arr],
-                activeIndices: [k]
-            }));
-            await new Promise(resolve => setTimeout(resolve, computeBaseSpeed() / state.speedMultiplier));
+            k++;
+            i++;
+            if (stopSorting.current) return;
+            setState(prevState => ({...prevState, data: [...arr], activeIndices: [k]}));
+            await new Promise(resolve => setTimeout(resolve, delay));
         }
 
         while (j < len2) {
             arr[k] = right[j];
-            k++; j++;
-            setState(prevState => ({
-                ...prevState,
-                data: [...arr],
-                activeIndices: [k]
-            }));
-            await new Promise(resolve => setTimeout(resolve, computeBaseSpeed() / state.speedMultiplier));
+            k++;
+            j++;
+            if (stopSorting.current) return;
+            setState(prevState => ({...prevState, data: [...arr], activeIndices: [k]}));
+            await new Promise(resolve => setTimeout(resolve, delay));
         }
     };
 
@@ -130,6 +126,7 @@ function TimSort() {
         const n = arr.length;
 
         for (let i = 0; i < n; i += MIN_RUN) {
+            if (stopSorting.current) return;
             await insertionSort(arr, i, Math.min(i + MIN_RUN - 1, n - 1));
         }
 
@@ -137,13 +134,20 @@ function TimSort() {
             for (let left = 0; left < n - size; left += 2 * size) {
                 const mid = left + size - 1;
                 const right = Math.min((left + 2 * size - 1), (n - 1));
-
+                if (stopSorting.current) return;
                 await merge(arr, left, mid, right);
             }
         }
     };
 
     const startTimSort = async () => {
+        if(!stopSorting.current) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            stopSorting.current = true;
+            setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: []}));
+            return;
+        }
+
         stopSorting.current = false;
         let arr = [...state.data];
         await timSort(arr);
