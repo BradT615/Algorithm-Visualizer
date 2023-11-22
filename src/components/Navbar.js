@@ -5,7 +5,7 @@ import logo from '../assets/logo-removebg.png';
 
 function Navbar() {
     return (
-        <nav className="fixed w-full bg-customBlue p-3 z-10">
+        <nav className="fixed w-full bg-customBlue p-3 z-10 shadow-xl">
             <Link to="/">
                 <div className='flex justify-center items-center text-2xl gap-1'>
                     <h1>Algorithm</h1>

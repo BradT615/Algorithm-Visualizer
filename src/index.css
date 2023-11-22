@@ -2,3 +2,23 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* Style for the scrollbar track */
+::-webkit-scrollbar-track {
+    background: #182246; /* Custom track color */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #91a4ad; /* Custom handle color */
+    border-radius: 10px; /* Rounded edges for the handle */
+    margin-top: 50px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1c63b8; /* Custom handle hover color */
+}
+
+::-webkit-scrollbar {
+    width: 10px; /* Custom scrollbar width */
+    margin-top: 40px;
+}
