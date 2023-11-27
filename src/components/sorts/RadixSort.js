@@ -7,32 +7,30 @@ function RadixSort() {
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
     };
-
     const generateData = length => {
         const numbers = Array.from({ length }, (_, i) => i + 1);
         shuffleArray(numbers);
         return numbers;
     };
 
-    const computeBaseSpeed = () => 4000 / state.numItems;
-
     const [state, setState] = useState({
-        numItems: 50,
-        data: generateData(50),
+        numItems: 25,
+        data: generateData(25),
         activeIndices: [],
         movingIndices: [],
         completedIndices: [],
         speedMultiplier: 1
     });
 
-    const stopSorting = useRef(false);
-
+    const computeBaseSpeed = () => 1000 / state.numItems;
+    const delay = computeBaseSpeed() / state.speedMultiplier;
+    const stopSorting = useRef(true);
     const initialMaxNumber = useRef(Math.max(...state.data));
 
     useEffect(() => {
         stopSorting.current = true;
         const newData = generateData(state.numItems);
-        setState(prevState => ({ ...prevState, data: newData }));
+        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], data: newData }));
         initialMaxNumber.current = Math.max(...newData);
     }, [state.numItems]);
 
@@ -61,7 +59,6 @@ function RadixSort() {
     const countSort = async (arr, n, exp) => {
         const output = new Array(n).fill(0);
         const count = new Array(10).fill(0);
-        const delay = computeBaseSpeed() / state.speedMultiplier;
     
         for (let i = 0; i < n; i++)
             count[Math.floor(arr[i] / exp) % 10]++;
@@ -75,6 +72,7 @@ function RadixSort() {
             // Highlight the moving indices
             setState(prevState => ({ ...prevState, movingIndices: [i] }));
             await new Promise(resolve => setTimeout(resolve, delay));
+            if (stopSorting.current) return;
     
             output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i];
             count[Math.floor(arr[i] / exp) % 10]--;
@@ -85,6 +83,7 @@ function RadixSort() {
             arr[i] = output[i];
             setState(prevState => ({ ...prevState, data: [...arr], activeIndices: [i], movingIndices: [] }));
             await new Promise(resolve => setTimeout(resolve, delay));
+            if (stopSorting.current) return;
         }
     };
     
@@ -101,6 +100,13 @@ function RadixSort() {
     
 
     const startRadixSort = async () => {
+        if(!stopSorting.current) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            stopSorting.current = true;
+            setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: []}));
+            return;
+        }
+
         stopSorting.current = false;
         let arr = [...state.data];
         await radixSort(arr);
