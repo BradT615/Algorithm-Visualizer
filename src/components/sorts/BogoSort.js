@@ -14,8 +14,6 @@ function BogoSort() {
         return numbers;
     };
 
-    const computeBaseSpeed = () => 4000 / state.numItems;
-
     const [state, setState] = useState({
         numItems: 4,
         data: generateData(4),
@@ -25,14 +23,15 @@ function BogoSort() {
         speedMultiplier: 1
     });
 
+    const computeBaseSpeed = () => 1000 / state.numItems;
+    const delay = computeBaseSpeed() / state.speedMultiplier;
     const stopSorting = useRef(false);
-
     const initialMaxNumber = useRef(Math.max(...state.data));
 
     useEffect(() => {
         stopSorting.current = true;
         const newData = generateData(state.numItems);
-        setState(prevState => ({ ...prevState, data: newData }));
+        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], data: newData }));
         initialMaxNumber.current = Math.max(...newData);
     }, [state.numItems]);
 
@@ -62,7 +61,8 @@ function BogoSort() {
             if (stopSorting.current) return;
             shuffleArray(arr);
             setState(prevState => ({ ...prevState, data: [...arr], movingIndices: [...Array(arr.length).keys()] }));
-            await new Promise(resolve => setTimeout(resolve, computeBaseSpeed() / state.speedMultiplier));
+            await new Promise(resolve => setTimeout(resolve, delay));
+            if (stopSorting.current) return;
         }
     };
 
