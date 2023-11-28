@@ -7,74 +7,125 @@ function CountingSort() {
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
     };
-
     const generateData = length => {
         const numbers = Array.from({ length }, (_, i) => i + 1);
         shuffleArray(numbers);
         return numbers;
     };
 
-    const computeBaseSpeed = () => 4000 / state.numItems;
-
     const [state, setState] = useState({
-        numItems: 50,
-        data: generateData(50),
+        numItems: 25,
+        data: generateData(25),
         activeIndices: [],
         movingIndices: [],
         completedIndices: [],
         speedMultiplier: 1
     });
 
-    const stopSorting = useRef(false);
-
+    const computeBaseSpeed = () => 4000 / state.numItems;
+    const delay = computeBaseSpeed() / state.speedMultiplier;
+    const stopSorting = useRef(true);
     const initialMaxNumber = useRef(Math.max(...state.data));
 
     useEffect(() => {
         stopSorting.current = true;
         const newData = generateData(state.numItems);
-        setState(prevState => ({ ...prevState, data: newData }));
+        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], data: newData }));
         initialMaxNumber.current = Math.max(...newData);
     }, [state.numItems]);
 
-    const countingSort = async (arr) => {
-        const max = Math.max(...arr);
-        const count = Array(max + 1).fill(0);
-        const delay = computeBaseSpeed() / state.speedMultiplier;
-
-        // Counting Phase with highlighting
-        for (let i = 0; i < arr.length; i++) {
-            const num = arr[i];
-            count[num]++;
-            setState(prevState => ({ ...prevState, activeIndices: [i] }));
+    const highlightAllBarsSequentially = async (totalTime = 1000) => {
+        const numBars = state.data.length;
+        const delay = totalTime / numBars;
+    
+        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [] }));
+    
+        for (let i = 0; i < numBars; i++) {
+            if (stopSorting.current) return;
+    
+            setState(prevState => ({ ...prevState, completedIndices: [...prevState.completedIndices, i] }));
             await new Promise(resolve => setTimeout(resolve, delay));
         }
+    };
 
-        // Rebuilding Phase with highlighting
-        let index = 0;
-        for (let i = 0; i <= max; i++) {
-            while (count[i]-- > 0) {
+    const cycleSort = async (arr) => {
+        for (let cycleStart = 0; cycleStart < arr.length - 1; cycleStart++) {
+            let item = arr[cycleStart];
+            let pos = cycleStart;
+            for (let i = cycleStart + 1; i < arr.length; i++) {
                 if (stopSorting.current) return;
-                
-                setState(prevState => ({ ...prevState, activeIndices: [index] }));
+                if (arr[i] < item) {
+                    pos += 1;
+                }
+            }
+            if (stopSorting.current) return;
+    
+            if (pos === cycleStart) {
                 await new Promise(resolve => setTimeout(resolve, delay));
-
-                arr[index++] = i;
-                setState(prevState => ({ ...prevState, data: [...arr] }));
+                if (stopSorting.current) return;
+                continue;
+            }
+    
+            while (item === arr[pos]) {
+                pos += 1;
+                if (stopSorting.current) return;
+            }
+    
+            if (pos !== cycleStart) {
+                [arr[pos], item] = [item, arr[pos]];
+                setState(prevState => ({ ...prevState, activeIndices: [pos], movingIndices: [cycleStart, pos] }));
+                await new Promise(resolve => setTimeout(resolve, delay));
+                if (stopSorting.current) return;
+            }
+    
+            while (pos !== cycleStart) {
+                pos = cycleStart;
+    
+                for (let i = cycleStart + 1; i < arr.length; i++) {
+                    if (arr[i] < item) {
+                        pos += 1;
+                    }
+                    if (stopSorting.current) return;
+                }
+    
+                while (item === arr[pos]) {
+                    pos += 1;
+                    if (stopSorting.current) return;
+                }
+    
+                if (item !== arr[pos]) {
+                    [arr[pos], item] = [item, arr[pos]];
+                    setState(prevState => ({ ...prevState, activeIndices: [pos], movingIndices: [cycleStart, pos] }));
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    if (stopSorting.current) return;
+                }
             }
         }
     };
-
-    const startCountingSort = async () => {
+    
+    
+    const startCycleSort = async () => {
+        if (!stopSorting.current) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            stopSorting.current = true;
+            setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [] }));
+            return;
+        }
+    
         stopSorting.current = false;
         let arr = [...state.data];
-        await countingSort(arr);
-        setState(prevState => ({ 
-            ...prevState, 
-            data: arr, 
-            movingIndices: [],
-            activeIndices: []
-        }));
+        await cycleSort(arr);
+        if (!stopSorting.current) {
+            setState(prevState => ({ 
+                ...prevState, 
+                data: arr, 
+                movingIndices: [],
+                activeIndices: []
+            }));
+            highlightAllBarsSequentially();
+        }
     };
+    
 
     const handleRandomize = async () => {
         stopSorting.current = true;
@@ -97,7 +148,7 @@ function CountingSort() {
 
     return (
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12'>
-            <h1 className='text-4xl my-10'>Counting Sort</h1>
+            <h1 className='text-4xl my-10'>Cycle Sort</h1>
             <div className="flex items-end max-w-6xl" style={{ height: '400px', width: '90%', gap: '1px' }}>
                 {state.data.map((value, idx) => (
                     <div 
@@ -105,6 +156,8 @@ function CountingSort() {
                         style={{ height: `${(value / initialMaxNumber.current) * 100}%`, width: `${barWidth}%` }}
                         className={`
                             ${state.activeIndices.includes(idx) ? 'bg-customPink' : ''}
+                            ${state.completedIndices.includes(idx) ? 'bg-customPurple' : ''}
+                            ${state.movingIndices.includes(idx) ? 'bg-customBlue' : ''}
                             ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) && !state.movingIndices.includes(idx) ? 'bg-customLightBlue' : ''}
                         `}
                     />
@@ -112,7 +165,7 @@ function CountingSort() {
             </div>
             <div className='flex flex-col-reverse sm:flex-row gap-4 w-full max-w-xl py-10'>
                 <div className='flex justify-center gap-4 w-full'>
-                    <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={startCountingSort}>Sort</button>
+                    <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={startCycleSort}>Sort</button>
                     <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={handleRandomize}>Randomize</button>
                 </div>
                 <div className='flex justify-center gap-4 w-full'>
@@ -125,15 +178,15 @@ function CountingSort() {
                             onChange={e => {
                                 const value = parseInt(e.target.value, 10);
                                 if (value < 5) {
-                                    setState(prevState => ({ ...prevState, numItems: 5 }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 5 }));
                                 } else if (isMediumScreen && value > 50) {
-                                    setState(prevState => ({ ...prevState, numItems: 50 }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 50 }));
                                 } else if (isLargeScreen && value > 100) {
-                                    setState(prevState => ({ ...prevState, numItems: 100 }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 100 }));
                                 } else if (!isLargeScreen && value > 200) {
-                                    setState(prevState => ({ ...prevState, numItems: 200 }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 200 }));
                                 } else {
-                                    setState(prevState => ({ ...prevState, numItems: value }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: value }));
                                 }
                             }}                            
                             className="px-2 py-1 border rounded w-24"

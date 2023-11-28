@@ -6,7 +6,7 @@ import QuickSort from './sorts/QuickSort';
 import HeapSort from './sorts/HeapSort.js';
 import TimSort from './sorts/TimSort.js';
 import ShellSort from './sorts/ShellSort.js';
-import CountingSort from './sorts/CountingSort.js';
+import CycleSort from './sorts/CycleSort.js';
 import CocktailSort from './sorts/CocktailSort.js';
 import CombSort from './sorts/CombSort.js';
 import GnomeSort from './sorts/GnomeSort.js';
@@ -25,7 +25,7 @@ const AlgorithmComponents = {
     HeapSort: HeapSort,
     TimSort: TimSort,
     ShellSort: ShellSort,
-    CountingSort: CountingSort,
+    CycleSort: CycleSort,
     CocktailSort: CocktailSort,
     CombSort: CombSort,
     GnomeSort: GnomeSort,
