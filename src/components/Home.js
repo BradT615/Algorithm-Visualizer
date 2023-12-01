@@ -25,15 +25,17 @@ function Home() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-24 p-10">
                 {algorithmNames.map((name, i) => (
                     <Link key={i} to={`/${name}`}>
-                        <div className="bg-customBlue text-customOffWhite text-2xl p-4 flex flex-col items-center rounded-3xl w-full transform hover:scale-105 transition-transform">
-                            <img src={getImagePath(name)} alt={`${name} Algorithm`} className="rounded-full bg-transparent p-6" />
-                            {name}
+                        <div className="bg-customCyberBlue text-customOffWhite p-4 flex flex-col items-center rounded-lg lg:rounded-2xl w-full transform hover:scale-105 transition-transform">
+                            <img src={getImagePath(name)} alt={`${name} Algorithm`} />
+                            <div className="text-center text-sm sm:text-xl lg:text-2xl xl:text-3xl"> {/* Responsive text sizing */}
+                                {name}
+                            </div>
                         </div>
                     </Link>
                 ))}
             </div>
         </div>
-    );
+    );    
 }
 
 export default Home;
