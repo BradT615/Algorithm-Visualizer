@@ -22,12 +22,12 @@ function Home() {
 
     return (
         <div className="h-full max-w-7xl m-auto flex flex-col justify-center items-center">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-24 p-10">
+            <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 mt-24 p-10">
                 {algorithmNames.map((name, i) => (
                     <Link key={i} to={`/${name}`}>
                         <div className="bg-customCyberBlue text-customOffWhite p-4 flex flex-col items-center rounded-lg lg:rounded-2xl w-full transform hover:scale-105 transition-transform">
                             <img src={getImagePath(name)} alt={`${name} Algorithm`} />
-                            <div className="text-center text-sm sm:text-xl lg:text-2xl xl:text-3xl"> {/* Responsive text sizing */}
+                            <div className="text-center text-xl sm:text-xl lg:text-2xl xl:text-3xl"> {/* Responsive text sizing */}
                                 {name}
                             </div>
                         </div>
