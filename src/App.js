@@ -1,5 +1,4 @@
-// App.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
@@ -7,6 +6,10 @@ import './index.css';
 import AlgorithmComponents from './components/AlgorithmMapping';
 
 function App() {
+    useEffect(() => {
+        document.title = "Algorithm Visualizer"; // Set your desired title here
+    }, []);
+
     return (
         <Router>
             <div className='grid grid-rows-[auto,1fr] bg-customDarkBlue min-h-screen text-customGray'>
