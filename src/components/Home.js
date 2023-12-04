@@ -26,7 +26,17 @@ function Home() {
                 {algorithmNames.map((name, i) => (
                     <Link key={i} to={`/${name}`}>
                         <div className="bg-customCyberBlue text-customOffWhite p-4 flex flex-col items-center rounded-lg lg:rounded-2xl w-full glow-effect transform hover:scale-105 transition-transform">
-                            <img src={getImagePath(name)} alt={`${name} Algorithm`} />
+                            <img 
+                                src={getImagePath(name)} 
+                                alt={`${name} Algorithm`} 
+                                onError={(e) => {
+                                    if (e.currentTarget.src !== '../assets/logo-removebg.png') { // Replace with your actual fallback image path
+                                        e.currentTarget.src = '../assets/logo-removebg.png'; // Fallback image
+                                        e.currentTarget.onerror = null; // Prevents infinite loop if fallback image also fails
+                                    }
+                                }}
+                                key={name} // Adding key to help React identify the images uniquely
+                            />
                             <div className="text-center text-xl sm:text-xl lg:text-2xl xl:text-3xl"> {/* Responsive text sizing */}
                                 {name}
                             </div>
@@ -35,7 +45,9 @@ function Home() {
                 ))}
             </div>
         </div>
-    );    
+    );
+    
+     
 }
 
 export default Home;
