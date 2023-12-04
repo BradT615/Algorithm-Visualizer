@@ -7,7 +7,7 @@ import AlgorithmComponents from './components/AlgorithmMapping';
 
 function App() {
     useEffect(() => {
-        document.title = "Algorithm Visualizer"; // Set your desired title here
+        document.title = "Algorithm Visualizer";
     }, []);
 
     return (
