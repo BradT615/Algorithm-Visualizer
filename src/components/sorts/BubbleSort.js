@@ -7,6 +7,7 @@ function BubbleSort() {
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
     };
+
     const generateData = length => {
         const numbers = Array.from({ length }, (_, i) => i + 1);
         shuffleArray(numbers);
@@ -21,9 +22,24 @@ function BubbleSort() {
         speedMultiplier: 1
     });
 
+    const [containerWidth, setContainerWidth] = useState(0);
+    const containerRef = useRef(null);
+    const stopSorting = useRef(true);
+
+    useEffect(() => {
+        const updateWidth = () => {
+            if (containerRef.current) {
+                setContainerWidth(containerRef.current.offsetWidth);
+            }
+        };
+
+        updateWidth();
+        window.addEventListener('resize', updateWidth);
+        return () => window.removeEventListener('resize', updateWidth);
+    }, []);
+
     const computeBaseSpeed = () => 1000 / state.numItems;
     const delay = computeBaseSpeed() / state.speedMultiplier;
-    const stopSorting = useRef(true);
 
     useEffect(() => {
         stopSorting.current = true;
@@ -89,16 +105,17 @@ function BubbleSort() {
     
     const maxNumber = Math.max(...state.data);
     const isMediumScreen = window.innerWidth < 768;
-    const barWidth = 100 / state.numItems;
+    const barWidth = Math.floor(containerWidth / state.numItems) - 1;
 
     return (
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12'>
             <h1 className='text-4xl my-10'>Bubble Sort</h1>
-            <div className="flex justify-center items-end max-w-4xl" style={{ height: '400px', width: '90%', gap: '1px' }}>
+            <h1 className='text-4xl'>{barWidth}</h1>
+            <div ref={containerRef} className="flex justify-center items-end max-w-6xl m-auto" style={{ height: '400px', width: '100%'}}>
                 {state.data.map((value, idx) => (
                     <div 
                         key={idx}
-                        style={{ height: `${(value / maxNumber) * 100}%`, width: `${barWidth}%` }}
+                        style={{ height: `${(value / maxNumber) * 100}%`, width: `${barWidth}px`}}
                         className={`
                             ${state.activeIndices.includes(idx) ? 'bg-customPink' : ''}
                             ${state.completedIndices.includes(idx) ? 'bg-customPurple' : ''}
