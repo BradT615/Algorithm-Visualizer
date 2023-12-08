@@ -111,7 +111,7 @@ function BubbleSort() {
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12 border-2'>
             <h1 className='text-4xl my-10'>Bubble Sort</h1>
             <h1 className='text-4xl'>{barWidth}</h1>
-            <div ref={containerRef} className="flex justify-center items-end max-w-6xl m-auto" style={{ height: '400px', width: '90%', gap: '1px'}}>
+            <div ref={containerRef} className="flex justify-center items-end max-w-6xl m-auto" style={{ height: '400px', width: '100%'}}>
                 {state.data.map((value, idx) => (
                     <div 
                         key={idx}
