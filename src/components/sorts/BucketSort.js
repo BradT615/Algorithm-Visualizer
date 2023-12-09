@@ -107,7 +107,7 @@ function BucketSort() {
 
     return (
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12'>
-            <h1 className='text-4xl my-10'>Bucket Sort</h1>
+            <h1 className='text-4xl sm:text-6xl my-16 sm:my-8 sm:mb-16'>Bucket Sort</h1>
             <div className="flex items-end max-w-6xl" style={{ height: '400px', width: '90%', gap: '1px' }}>
                 {state.data.map((value, idx) => (
                     <div 

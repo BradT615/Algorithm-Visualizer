@@ -86,14 +86,15 @@ function BogoSort() {
         }));
     };
 
-    const isMediumScreen = window.innerWidth < 768;
-    const isLargeScreen = window.innerWidth < 1280;
     const barWidth = 100 / state.numItems;
 
     return (
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-10'>
-            <h1 className='text-4xl my-2'>Bogo Sort</h1>
-            <h1 className='text-xl my-10'>Good Luck!</h1>
+            <div className='my-16 sm:my-8 sm:mb-16 text-center'>
+                <h1 className='text-4xl sm:text-6xl mb-4'>Bogo Sort</h1>
+                <h1 className='text-2xl sm:text-4xl'>Good Luck!</h1>
+            </div>
+            
             <div className="flex items-end max-w-6xl" style={{ height: '400px', width: '90%', gap: '1px' }}>
                 {state.data.map((value, idx) => (
                     <div 

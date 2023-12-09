@@ -108,7 +108,7 @@ function InsertionSort() {
 
     return (
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12'>
-            <h1 className='text-4xl my-10'>Insertion Sort</h1>
+            <h1 className='text-4xl sm:text-6xl my-16 sm:my-8 sm:mb-16'>Insertion Sort</h1>
             <div className="flex justify-center items-end max-w-4xl" style={{ height: '400px', width: '90%', gap: '1px' }}>
                 {state.data.map((value, idx) => (
                     <div 
