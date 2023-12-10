@@ -17,8 +17,8 @@ function BucketSort() {
     const computeBaseSpeed = () => 4000 / state.numItems;
 
     const [state, setState] = useState({
-        numItems: 50,
-        data: generateData(50),
+        numItems: 25,
+        data: generateData(25),
         activeIndices: [],
         movingIndices: [],
         completedIndices: [],
@@ -108,7 +108,7 @@ function BucketSort() {
     return (
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12'>
             <h1 className='text-4xl sm:text-6xl my-16 sm:my-8 sm:mb-16'>Bucket Sort</h1>
-            <div className="flex items-end max-w-6xl" style={{ height: '400px', width: '90%', gap: '1px' }}>
+            <div className="flex items-end max-w-4xl" style={{ height: '400px', width: '90%', gap: '1px' }}>
                 {state.data.map((value, idx) => (
                     <div 
                         key={idx}
