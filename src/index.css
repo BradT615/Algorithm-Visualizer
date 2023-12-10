@@ -2,9 +2,13 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+html {
+    background-color: #182246;
+}
 /* Style for the scrollbar track */
 ::-webkit-scrollbar-track {
     background: #11162a; /* Custom track color */
+    margin-top: 4rem;
 }
 
 /* Handle */
