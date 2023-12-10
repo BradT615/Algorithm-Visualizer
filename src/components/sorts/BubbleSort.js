@@ -22,25 +22,11 @@ function BubbleSort() {
         speedMultiplier: 1
     });
 
-    const [containerWidth, setContainerWidth] = useState(0);
-    const containerRef = useRef(null);
-    const stopSorting = useRef(true);
-
-    useEffect(() => {
-        const updateWidth = () => {
-            if (containerRef.current) {
-                setContainerWidth(containerRef.current.offsetWidth);
-            }
-        };
-
-        updateWidth();
-        window.addEventListener('resize', updateWidth);
-        return () => window.removeEventListener('resize', updateWidth);
-    }, []);
 
     const computeBaseSpeed = () => 1000 / state.numItems;
     const delay = computeBaseSpeed() / state.speedMultiplier;
-
+    const stopSorting = useRef(true);
+    
     useEffect(() => {
         stopSorting.current = true;
         setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], data: generateData(state.numItems) }));
