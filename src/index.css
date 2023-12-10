@@ -5,11 +5,19 @@
 html {
     background-color: #182246;
 }
-/* Style for the scrollbar track */
+
 ::-webkit-scrollbar-track {
     background: #11162a; /* Custom track color */
-    margin-top: 4rem;
+    margin-top: 3rem;
 }
+
+/* Apply 4rem margin-top for screens 768px and wider */
+@media (min-width: 640px) {
+    ::-webkit-scrollbar-track {
+        margin-top: 4rem;
+    }
+}
+
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
