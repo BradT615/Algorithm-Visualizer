@@ -49,35 +49,40 @@ function CountingSort() {
     };
 
     const cycleSort = async (arr) => {
-        for (let cycleStart = 0; cycleStart < arr.length - 1; cycleStart++) {
+        for (let cycleStart = 0; cycleStart <= arr.length - 2; cycleStart++) {
             let item = arr[cycleStart];
+    
+            // Find position where we put the element
             let pos = cycleStart;
             for (let i = cycleStart + 1; i < arr.length; i++) {
-                if (stopSorting.current) return;
                 if (arr[i] < item) {
-                    pos += 1;
+                    pos++;
                 }
             }
-            if (stopSorting.current) return;
     
+            // If the item is already in the correct position
             if (pos === cycleStart) {
-                await new Promise(resolve => setTimeout(resolve, delay));
-                if (stopSorting.current) return;
                 continue;
             }
     
+            // Ignore all duplicate elements
             while (item === arr[pos]) {
                 pos += 1;
-                if (stopSorting.current) return;
             }
     
+            // Put the item to its right position
             if (pos !== cycleStart) {
                 [arr[pos], item] = [item, arr[pos]];
-                setState(prevState => ({ ...prevState, activeIndices: [pos], movingIndices: [cycleStart, pos] }));
+                // Update the state to reflect the change and show the moving index
+                setState(prevState => ({
+                    ...prevState,
+                    data: [...arr],
+                    movingIndices: [...prevState.movingIndices, cycleStart, pos]
+                }));
                 await new Promise(resolve => setTimeout(resolve, delay));
-                if (stopSorting.current) return;
             }
     
+            // Rotate the rest of the cycle
             while (pos !== cycleStart) {
                 pos = cycleStart;
     
@@ -85,25 +90,31 @@ function CountingSort() {
                     if (arr[i] < item) {
                         pos += 1;
                     }
-                    if (stopSorting.current) return;
                 }
     
                 while (item === arr[pos]) {
                     pos += 1;
-                    if (stopSorting.current) return;
                 }
     
                 if (item !== arr[pos]) {
                     [arr[pos], item] = [item, arr[pos]];
-                    setState(prevState => ({ ...prevState, activeIndices: [pos], movingIndices: [cycleStart, pos] }));
+                    // Update the state to reflect the change and show the moving index
+                    setState(prevState => ({
+                        ...prevState,
+                        data: [...arr],
+                        activeIndices: [...prevState.activeIndices, cycleStart, pos]
+                    }));
                     await new Promise(resolve => setTimeout(resolve, delay));
-                    if (stopSorting.current) return;
+                    // Clear the movingIndices after each cycle
+                    setState(prevState => ({ ...prevState, activeIndices: [] }));
                 }
             }
         }
     };
     
+       
     
+     
     const startCycleSort = async () => {
         if (!stopSorting.current) {
             await new Promise(resolve => setTimeout(resolve, delay));
