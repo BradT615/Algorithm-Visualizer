@@ -22,7 +22,7 @@ function CountingSort() {
         speedMultiplier: 1
     });
 
-    const computeBaseSpeed = () => 2000 / state.numItems;
+    const computeBaseSpeed = () => 10000 / state.numItems;
     const delay = computeBaseSpeed() / state.speedMultiplier;
     const stopSorting = useRef(true);
     const initialMaxNumber = useRef(Math.max(...state.data));
@@ -80,6 +80,7 @@ function CountingSort() {
                     movingIndices: [...prevState.movingIndices, cycleStart, pos]
                 }));
                 await new Promise(resolve => setTimeout(resolve, delay));
+                if (stopSorting.current) return;
             }
     
             // Rotate the rest of the cycle
@@ -105,6 +106,7 @@ function CountingSort() {
                         activeIndices: [...prevState.activeIndices, cycleStart, pos]
                     }));
                     await new Promise(resolve => setTimeout(resolve, delay));
+                    if (stopSorting.current) return;
                     // Clear the movingIndices after each cycle
                     setState(prevState => ({ ...prevState, activeIndices: [] }));
                 }
