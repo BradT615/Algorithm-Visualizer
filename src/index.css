@@ -33,6 +33,12 @@ html {
     width: 10px; /* Custom scrollbar width */
 }
 
+.prevent-select {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+  }
+
 .glow-effect:hover {
     box-shadow: 0 0 8px 0px rgba(134,81,241);
 }
