@@ -7,7 +7,7 @@ function Home() {
         "BubbleSort", "CocktailSort", "QuickSort", "CombSort",
         "InsertionSort", "ShellSort", "GnomeSort", "PatienceSort",
         "SelectionSort", "HeapSort","MergeSort", "TimSort",
-        "CycleSort", "BucketSort", "RadixSort", "BogoSort"
+        "CycleSort", "OddEvenSort", "RadixSort", "BogoSort"
     ];    
 
     return (

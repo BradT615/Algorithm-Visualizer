@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-function BucketSort() {
+function OddEvenSort() {
     const shuffleArray = arr => {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -14,33 +14,28 @@ function BucketSort() {
         return numbers;
     };
 
-    const computeBaseSpeed = () => 4000 / state.numItems;
-
     const [state, setState] = useState({
         numItems: 25,
         data: generateData(25),
         activeIndices: [],
-        movingIndices: [],
         completedIndices: [],
         speedMultiplier: 1
     });
 
-    const stopSorting = useRef(false);
-
-    const initialMaxNumber = useRef(Math.max(...state.data));
+    const computeBaseSpeed = () => 1000 / state.numItems;
+    const delay = computeBaseSpeed() / state.speedMultiplier;
+    const stopSorting = useRef(true);
 
     useEffect(() => {
         stopSorting.current = true;
-        const newData = generateData(state.numItems);
-        setState(prevState => ({ ...prevState, data: newData }));
-        initialMaxNumber.current = Math.max(...newData);
+        setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], data: generateData(state.numItems) }));
     }, [state.numItems]);
 
     const highlightAllBarsSequentially = async (totalTime = 1000) => {
         const numBars = state.data.length;
         const delay = totalTime / numBars;
     
-        setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [] }));
+        setState(prevState => ({ ...prevState, activeIndices: []}));
     
         for (let i = 0; i < numBars; i++) {
             if (stopSorting.current) return;
@@ -50,45 +45,50 @@ function BucketSort() {
         }
     };
 
-    const bucketSort = async arr => {
-        const numBuckets = arr.length;
-        const buckets = Array.from({ length: numBuckets }, () => []);
-
-        // Distribute elements into buckets
-        for (let i = 0; i < arr.length; i++) {
-            const bucketIndex = Math.floor(numBuckets * arr[i] / (initialMaxNumber.current + 1));
-            buckets[bucketIndex].push(arr[i]);
+    const oddEvenSort = async () => {
+        if (!stopSorting.current) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            stopSorting.current = true;
+            setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [] }));
+            return;
         }
 
-        // Sort each bucket and concatenate
-        let index = 0;
-        for (let i = 0; i < numBuckets; i++) {
-            const bucket = buckets[i].sort((a, b) => a - b); // Using JavaScript's native sort
-            for (let j = 0; j < bucket.length; j++) {
-                arr[index++] = bucket[j];
+        let arr = [...state.data];
+        stopSorting.current = false;
+        let isSorted = false;
+
+        while (!isSorted) {
+            isSorted = true;
+
+            // Perform odd indexed passes
+            for (let i = 1; i <= arr.length - 2; i += 2) {
+                if (stopSorting.current) return;
+                if (arr[i] > arr[i + 1]) {
+                    [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                    isSorted = false;
+
+                    setState(prevState => ({ ...prevState, data: [...arr], activeIndices: [i, i + 1] }));
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+
+            // Perform even indexed passes
+            for (let i = 0; i <= arr.length - 2; i += 2) {
+                if (stopSorting.current) return;
+                if (arr[i] > arr[i + 1]) {
+                    [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                    isSorted = false;
+
+                    setState(prevState => ({ ...prevState, data: [...arr], activeIndices: [i, i + 1] }));
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
             }
         }
-
-        await highlightAllBarsSequentially();
-    };
-
-    const startBucketSort = async () => {
-        stopSorting.current = false;
-        let arr = [...state.data];
-        await bucketSort(arr);
-        if (!stopSorting.current) {
-            setState(prevState => ({ 
-                ...prevState, 
-                data: arr, 
-                movingIndices: [],
-                activeIndices: []
-            }));
-        }
+        highlightAllBarsSequentially();
     };
 
     const handleRandomize = async () => {
         stopSorting.current = true;
-        const newData = generateData(state.numItems);
     
         await new Promise(resolve => setTimeout(resolve, 2*computeBaseSpeed()));
 
@@ -98,33 +98,31 @@ function BucketSort() {
             activeIndices: [],
             completedIndices: []
         }));
-        initialMaxNumber.current = Math.max(...newData);
     };
 
+    const maxNumber = Math.max(...state.data);
     const isMediumScreen = window.innerWidth < 768;
-    const isLargeScreen = window.innerWidth < 1280;
     const barWidth = 100 / state.numItems;
 
     return (
         <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12'>
-            <h1 className='text-4xl sm:text-6xl my-16 sm:my-8 sm:mb-16'>Bucket Sort</h1>
+            <h1 className='text-4xl sm:text-6xl my-16 sm:my-8 sm:mb-16'>Odd-Even Sort</h1>
             <div className="flex items-end max-w-4xl" style={{ height: '400px', width: '90%', gap: '1px' }}>
                 {state.data.map((value, idx) => (
                     <div 
                         key={idx}
-                        style={{ height: `${(value / initialMaxNumber.current) * 100}%`, width: `${barWidth}%` }}
+                        style={{ height: `${(value / maxNumber) * 100}%`, width: `${barWidth}%` }}
                         className={`
                             ${state.activeIndices.includes(idx) ? 'bg-customPink' : ''}
                             ${state.completedIndices.includes(idx) ? 'bg-customPurple' : ''}
-                            ${state.movingIndices.includes(idx) ? 'bg-customBlue' : ''}
-                            ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) && !state.movingIndices.includes(idx) ? 'bg-customLightBlue' : ''}
+                            ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) ? 'bg-customLightBlue' : ''}
                         `}
                     />
                 ))}
             </div>
             <div className='flex flex-col-reverse sm:flex-row gap-4 w-full max-w-xl py-10'>
                 <div className='flex justify-center gap-4 w-full'>
-                    <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={startBucketSort}>Sort</button>
+                    <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={oddEvenSort}>Sort</button>
                     <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={handleRandomize}>Randomize</button>
                 </div>
                 <div className='flex justify-center gap-4 w-full'>
@@ -137,18 +135,16 @@ function BucketSort() {
                             onChange={e => {
                                 const value = parseInt(e.target.value, 10);
                                 if (value < 5) {
-                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 5 }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], numItems: 5 }));
                                 } else if (isMediumScreen && value > 50) {
-                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 50 }));
-                                } else if (isLargeScreen && value > 100) {
-                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 100 }));
-                                } else if (!isLargeScreen && value > 200) {
-                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: 200 }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], numItems: 50 }));
+                                } else if (!isMediumScreen && value > 100) {
+                                    setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], numItems: 100 }));
                                 } else {
-                                    setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: [], numItems: value }));
+                                    setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], numItems: value }));
                                 }
                             }}
-                            className="px-2 py-1 border rounded w-24"
+                            className="px-2 py-1 border rounded w-20"
                             placeholder="Number of items"
                         />
                     </div>
@@ -156,7 +152,10 @@ function BucketSort() {
                         <label className="self-center">Speed:</label>
                         <select 
                             value={state.speedMultiplier}
-                            onChange={e => setState(prevState => ({ ...prevState, speedMultiplier: parseFloat(e.target.value) }))}
+                            onChange={e => {
+                                stopSorting.current = true;
+                                setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: [], speedMultiplier: parseFloat(e.target.value) }));
+                            }}
                             className="border rounded">
                             <option value={0.25}>0.25x</option>
                             <option value={0.5}>0.5x</option>
@@ -173,4 +172,4 @@ function BucketSort() {
     );
 }
 
-export default BucketSort;
+export default OddEvenSort;

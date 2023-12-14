@@ -11,7 +11,7 @@ import CocktailSort from './sorts/CocktailSort.js';
 import CombSort from './sorts/CombSort.js';
 import GnomeSort from './sorts/GnomeSort.js';
 import PatienceSort from './sorts/PatienceSort.js';
-import BucketSort from './sorts/BucketSort.js';
+import OddEvenSort from './sorts/OddEvenSort.js';
 import RadixSort from './sorts/RadixSort.js';
 import BogoSort from './sorts/BogoSort.js';
 // Import other visualizers as you create them
@@ -30,7 +30,7 @@ const AlgorithmComponents = {
     CombSort: CombSort,
     GnomeSort: GnomeSort,
     PatienceSort: PatienceSort,
-    BucketSort: BucketSort,
+    OddEvenSort: OddEvenSort,
     RadixSort: RadixSort,
     BogoSort: BogoSort
     // ... other algorithms

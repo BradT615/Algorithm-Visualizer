@@ -22,7 +22,7 @@ function CountingSort() {
         speedMultiplier: 1
     });
 
-    const computeBaseSpeed = () => 1000 / state.numItems;
+    const computeBaseSpeed = () => 3000 / state.numItems;
     const delay = computeBaseSpeed() / state.speedMultiplier;
     const stopSorting = useRef(true);
     const initialMaxNumber = useRef(Math.max(...state.data));
