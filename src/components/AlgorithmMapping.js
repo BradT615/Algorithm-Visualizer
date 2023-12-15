@@ -10,7 +10,7 @@ import CycleSort from './sorts/CycleSort.js';
 import CocktailSort from './sorts/CocktailSort.js';
 import CombSort from './sorts/CombSort.js';
 import GnomeSort from './sorts/GnomeSort.js';
-import PatienceSort from './sorts/PatienceSort.js';
+import BitonicSort from './sorts/BitonicSort.js';
 import OddEvenSort from './sorts/OddEvenSort.js';
 import RadixSort from './sorts/RadixSort.js';
 import BogoSort from './sorts/BogoSort.js';
@@ -29,7 +29,7 @@ const AlgorithmComponents = {
     CocktailSort: CocktailSort,
     CombSort: CombSort,
     GnomeSort: GnomeSort,
-    PatienceSort: PatienceSort,
+    BitonicSort: BitonicSort,
     OddEvenSort: OddEvenSort,
     RadixSort: RadixSort,
     BogoSort: BogoSort

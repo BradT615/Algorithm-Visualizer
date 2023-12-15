@@ -5,7 +5,7 @@ import logo from '../assets/logo-removebg.png';
 function Home() {
     const algorithmNames = [
         "BubbleSort", "CocktailSort", "QuickSort", "CombSort",
-        "InsertionSort", "ShellSort", "GnomeSort", "PatienceSort",
+        "InsertionSort", "ShellSort", "GnomeSort", "BitonicSort",
         "SelectionSort", "HeapSort","MergeSort", "TimSort",
         "CycleSort", "OddEvenSort", "RadixSort", "BogoSort"
     ];    
