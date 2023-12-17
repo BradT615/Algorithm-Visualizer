@@ -95,7 +95,7 @@ function BogoSort() {
                 <h1 className='text-2xl sm:text-4xl'>Good Luck!</h1>
             </div>
             
-            <div className="flex items-end max-w-4xl" style={{ height: '400px', width: '90%', gap: '1px' }}>
+            <div className="flex items-end max-w-4xl" style={{ height: '400px', minHeight: '100px', width: '90%', gap: '1px' }}>
                 {state.data.map((value, idx) => (
                     <div 
                         key={idx}
