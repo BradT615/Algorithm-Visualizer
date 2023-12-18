@@ -11,8 +11,8 @@ function Home() {
     ];    
 
     return (
-        <div className="h-full max-w-7xl m-auto flex flex-col justify-center items-center w-full border-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-6 mt-14 sm:mt-20 md:mt-24 p-4 md:p-10 max-sm:w-full border-2">
+        <div className="h-full max-w-7xl m-auto flex flex-col justify-center items-center w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-6 mt-14 sm:mt-20 md:mt-24 p-4 md:p-10 max-sm:w-full">
                 {algorithmNames.map((name, i) => (
                     <Link key={i} to={`/${name}`}>
                         <div className="bg-customBlue text-customOffWhite text-2xl m-auto max-w-[350px] sm:max-w-[200px] p-4 flex justify-center sm:flex-col items-center rounded-lg sm:rounded-xl md:rounded-2xl glow-effect transform hover:scale-105 transition-transform prevent-select">
