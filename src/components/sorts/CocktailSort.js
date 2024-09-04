@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Button } from "../ui/button"
+import { Input } from "../ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { Card, CardContent } from "../ui/card"
 
 function CocktailSort() {
-
     const shuffleArray = arr => {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -64,7 +67,7 @@ function CocktailSort() {
         while (swapped) {
             swapped = false;
     
-            // Forward pass:
+            // Forward pass
             for (let i = start; i < end - 1; i++) {
                 if (stopSorting.current) return;
                 setState(prevState => ({ ...prevState, activeIndices: [i, i + 1] }));
@@ -78,13 +81,12 @@ function CocktailSort() {
                 }
             }
     
-            // If nothing moved, then the array is sorted.
             if (!swapped) break;
     
             swapped = false;
             end--;
     
-            // Backward pass:
+            // Backward pass
             for (let i = end - 1; i >= start; i--) {
                 if (stopSorting.current) return;
                 setState(prevState => ({ ...prevState, activeIndices: [i, i + 1] }));
@@ -102,13 +104,13 @@ function CocktailSort() {
         }
     
         highlightAllBarsSequentially();
-    };    
+    };
 
     const handleRandomize = async () => {
         stopSorting.current = true;
-
-        await new Promise(resolve => setTimeout(resolve, computeBaseSpeed()));
     
+        await new Promise(resolve => setTimeout(resolve, 2*computeBaseSpeed()));
+
         setState(prevState => ({
             ...prevState,
             data: generateData(state.numItems),
@@ -117,73 +119,81 @@ function CocktailSort() {
         }));
     };
     
-
     const maxNumber = Math.max(...state.data);
     const isMediumScreen = window.innerWidth < 768;
     const barWidth = 100 / state.numItems;
 
     return (
-        <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12'>
-            <h1 className='text-2xl lg:text-6xl pt-20 lg:pb-20'>Cocktail Sort</h1>
-            <div className="flex items-end max-w-4xl" style={{ height: '400px', minHeight: '100px', width: '90%', gap: '1px' }}>
-                {state.data.map((value, idx) => (
-                    <div 
-                        key={idx}
-                        style={{ height: `${(value / maxNumber) * 100}%`, width: `${barWidth}%` }}
-                        className={`
-                            ${state.activeIndices.includes(idx) ? 'bg-customPink' : ''}
-                            ${state.completedIndices.includes(idx) ? 'bg-customPurple' : ''}
-                            ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) ? 'bg-customLightBlue' : ''}
-                        `}
-                    />
-                ))}
-            </div>
-            <div className='flex flex-col-reverse sm:flex-row gap-4 w-full max-w-xl py-10'>
-                <div className='flex justify-center gap-4 w-full'>
-                    <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={cocktailSort}>Sort</button>
-                    <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={handleRandomize}>Randomize</button>
+        <div className='flex flex-col justify-center items-center w-full space-y-6 p-4'>
+            <h1 className='text-3xl lg:text-6xl font-bold mb-8'>Cocktail Sort</h1>
+            <Card className="w-full max-w-4xl">
+                <CardContent className="p-6">
+                    <div className="flex items-end h-[400px]" style={{ gap: '1px' }}>
+                        {state.data.map((value, idx) => (
+                            <div 
+                                key={idx}
+                                style={{ 
+                                    height: `${(value / maxNumber) * 100}%`, 
+                                    width: `${barWidth}%` 
+                                }}
+                                className={`
+                                    ${state.activeIndices.includes(idx) ? 'bg-primary' : ''}
+                                    ${state.completedIndices.includes(idx) ? 'bg-secondary' : ''}
+                                    ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) ? 'bg-input' : ''}
+                                `}
+                            />
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+            <div className='flex flex-col sm:flex-row gap-4 w-full max-w-2xl'>
+                <div className='flex flex-col sm:flex-row gap-4 w-full'>
+                    <Button onClick={cocktailSort} className="w-full sm:w-auto">Sort</Button>
+                    <Button onClick={handleRandomize} variant="outline" className="w-full sm:w-auto">Randomize</Button>
                 </div>
-                <div className='flex justify-center gap-4 w-full'>
-                    <div className='flex gap-2 items-center'>
-                        <label>n =</label>
-                        <input
+                <div className='flex flex-col sm:flex-row gap-4 w-full'>
+                    <div className='flex items-center gap-2'>
+                        <label className="text-sm font-medium">n =</label>
+                        <Input
                             type="number"
-                            min="1"
+                            min="5"
+                            max={isMediumScreen ? "50" : "100"}
                             value={state.numItems}
-                            onChange={e => {
-                                stopSorting.current = true;
-                                const value = parseInt(e.target.value, 10);
-                                if (value < 5) {
-                                    setState(prevState => ({ ...prevState, numItems: 5 }));
-                                } else if (isMediumScreen && value > 50) {
-                                    setState(prevState => ({ ...prevState, numItems: 50 }));
-                                } else if (!isMediumScreen && value > 100) {
-                                    setState(prevState => ({ ...prevState, numItems: 100 }));
-                                } else {
-                                    setState(prevState => ({ ...prevState, numItems: value }));
-                                }
+                            onChange={(e) => {
+                                const value = Math.max(5, Math.min(parseInt(e.target.value, 10), isMediumScreen ? 50 : 100));
+                                setState(prevState => ({ 
+                                    ...prevState, 
+                                    activeIndices: [], 
+                                    completedIndices: [], 
+                                    numItems: value 
+                                }));
                             }}
-                            className="px-2 py-1 border rounded w-20"
-                            placeholder="Number of items"
+                            className="w-20"
                         />
                     </div>
-                    <div className='flex gap-2'>
-                        <label className="self-center">Speed:</label>
-                        <select 
-                            value={state.speedMultiplier}
-                            onChange={e => {
+                    <div className='flex items-center gap-2'>
+                        <label className="text-sm font-medium">Speed:</label>
+                        <Select 
+                            value={state.speedMultiplier.toString()}
+                            onValueChange={(value) => {
                                 stopSorting.current = true;
-                                setState(prevState => ({ ...prevState, speedMultiplier: parseFloat(e.target.value) }));
+                                setState(prevState => ({ 
+                                    ...prevState, 
+                                    activeIndices: [], 
+                                    completedIndices: [], 
+                                    speedMultiplier: parseFloat(value) 
+                                }));
                             }}
-                            className="border rounded">
-                            <option value={0.25}>0.25x</option>
-                            <option value={0.5}>0.5x</option>
-                            <option value={1}>1x</option>
-                            <option value={2}>2x</option>
-                            <option value={4}>4x</option>
-                            <option value={8}>8x</option>
-                            <option value={16}>16x</option>
-                        </select>
+                        >
+                            <SelectTrigger className="w-[100px]">
+                                <SelectValue placeholder="Speed" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {[0.25, 0.5, 1, 2, 4, 8, 16].map((speed) => (
+                                    <SelectItem key={speed} value={speed.toString()}>{speed}x</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
             </div>

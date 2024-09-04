@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Button } from "../ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { Card, CardContent } from "../ui/card"
 
-function MergeSort() {
+function BitonicSort() {
     const shuffleArray = arr => {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
     };
+
     const generateData = length => {
         const numbers = Array.from({ length }, (_, i) => i + 1);
         shuffleArray(numbers);
@@ -107,7 +111,7 @@ function MergeSort() {
 
         setState(prevState => ({
             ...prevState,
-            data: generateData(state.numItems),
+            data: newData,
             activeIndices: [],
             movingIndices: [],
             completedIndices: []
@@ -115,71 +119,82 @@ function MergeSort() {
         initialMaxNumber.current = Math.max(...newData);
     };
 
-    const isMediumScreen = window.innerWidth < 768;
-    const isLargeScreen = window.innerWidth < 1280;
     const barWidth = 100 / state.numItems;
 
     return (
-        <div className='flex flex-col justify-center items-center h-screen w-full space-y-4'>
-            <h1 className='text-2xl lg:text-6xl pt-20 lg:pb-20'>Bitonic Sort</h1>
-            <div className="flex items-end max-w-4xl" style={{ height: '400px', minHeight: '100px', width: '90%', gap: '1px' }}>
-                {state.data.map((value, idx) => (
-                    <div 
-                        key={idx}
-                        style={{ height: `${(value / initialMaxNumber.current) * 100}%`, width: `${barWidth}%` }}
-                        className={`
-                            ${state.activeIndices.includes(idx) ? 'bg-customPink' : ''}
-                            ${state.completedIndices.includes(idx) ? 'bg-customPurple' : ''}
-                            ${state.movingIndices.includes(idx) ? 'bg-customBlue' : ''}
-                            ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) && !state.movingIndices.includes(idx) ? 'bg-customLightBlue' : ''}
-                        `}
-                    />
-                ))}
-            </div>
-            <div className='flex flex-col-reverse sm:flex-row gap-4 w-full max-w-xl py-10'>
-                <div className='flex justify-center gap-4 w-full'>
-                    <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={startBitonicSort}>Sort</button>
-                    <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={handleRandomize}>Randomize</button>
-                </div>
-                <div className='flex justify-center gap-4 w-full'>
-                    <div className='flex gap-2 items-center'>
-                        <label className="self-center">n =</label>
-                        <select 
-                            value={state.numItems}
-                            onChange={e => setState(prevState => ({ 
-                                ...prevState, 
-                                activeIndices: [], 
-                                movingIndices: [], 
-                                completedIndices: [], 
-                                numItems: parseInt(e.target.value, 10) 
-                            }))}
-                            className="border rounded w-16 h-full"
-                        >
-                            <option value={8}>8</option>
-                            <option value={16}>16</option>
-                            <option value={32}>32</option>
-                            <option value={64}>64</option>
-                            <option value={128}>128</option>
-                        </select>
+        <div className='flex flex-col justify-center items-center w-full space-y-6 p-4'>
+            <h1 className='text-3xl lg:text-6xl font-bold mb-8'>Bitonic Sort</h1>
+            <Card className="w-full max-w-4xl">
+                <CardContent className="p-6">
+                    <div className="flex items-end h-[400px]" style={{ gap: '1px' }}>
+                        {state.data.map((value, idx) => (
+                            <div 
+                                key={idx}
+                                style={{ 
+                                    height: `${(value / initialMaxNumber.current) * 100}%`, 
+                                    width: `${barWidth}%` 
+                                }}
+                                className={`
+                                    ${state.activeIndices.includes(idx) ? 'bg-primary' : ''}
+                                    ${state.completedIndices.includes(idx) ? 'bg-secondary' : ''}
+                                    ${state.movingIndices.includes(idx) ? 'bg-accent' : ''}
+                                    ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) && !state.movingIndices.includes(idx) ? 'bg-input' : ''}
+                                `}
+                            />
+                        ))}
                     </div>
-                    <div className='flex gap-2'>
-                        <label className="self-center">Speed:</label>
-                        <select 
-                            value={state.speedMultiplier}
-                            onChange={e => setState(prevState => ({ 
-                                ...prevState, 
-                                speedMultiplier: parseFloat(e.target.value) 
-                            }))}
-                            className="border rounded"
+                </CardContent>
+            </Card>
+            <div className='flex flex-col sm:flex-row gap-4 w-full max-w-2xl'>
+                <div className='flex flex-col sm:flex-row gap-4 w-full'>
+                    <Button onClick={startBitonicSort} className="w-full sm:w-auto">Sort</Button>
+                    <Button onClick={handleRandomize} variant="outline" className="w-full sm:w-auto">Randomize</Button>
+                </div>
+                <div className='flex flex-col sm:flex-row gap-4 w-full'>
+                    <div className='flex items-center gap-2'>
+                        <label className="text-sm font-medium">n =</label>
+                        <Select 
+                            value={state.numItems.toString()}
+                            onValueChange={(value) => {
+                                setState(prevState => ({ 
+                                    ...prevState, 
+                                    activeIndices: [], 
+                                    movingIndices: [], 
+                                    completedIndices: [], 
+                                    numItems: parseInt(value, 10) 
+                                }));
+                            }}
                         >
-                            <option value={0.25}>0.25x</option>
-                            <option value={0.5}>0.5x</option>
-                            <option value={1}>1x</option>
-                            <option value={2}>2x</option>
-                            <option value={4}>4x</option>
-                            <option value={8}>8x</option>
-                            <option value={16}>16x</option>
-                        </select>
+                            <SelectTrigger className="w-[80px]">
+                                <SelectValue placeholder="Items" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {[8, 16, 32, 64, 128].map((num) => (
+                                    <SelectItem key={num} value={num.toString()}>{num}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className='flex items-center gap-2'>
+                        <label className="text-sm font-medium">Speed:</label>
+                        <Select 
+                            value={state.speedMultiplier.toString()}
+                            onValueChange={(value) => {
+                                setState(prevState => ({ 
+                                    ...prevState, 
+                                    speedMultiplier: parseFloat(value) 
+                                }));
+                            }}
+                        >
+                            <SelectTrigger className="w-[100px]">
+                                <SelectValue placeholder="Speed" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {[0.25, 0.5, 1, 2, 4, 8, 16].map((speed) => (
+                                    <SelectItem key={speed} value={speed.toString()}>{speed}x</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
             </div>
@@ -187,4 +202,4 @@ function MergeSort() {
     );
 }
 
-export default MergeSort;
+export default BitonicSort;

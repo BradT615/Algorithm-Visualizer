@@ -6,7 +6,7 @@ import logo from '../assets/logo-removebg.png';
 
 function NavbarComponent() {
     return (
-        <Navbar className="w-full z-10 bg-background shadow-sm">
+        <Navbar className="w-full">
             <NavbarContent className="flex justify-between w-full">
                 <Link to="/" className="flex items-center space-x-2 text-lg sm:text-2xl">
                     <img src={logo} className="w-8 sm:w-12" alt="Logo" />

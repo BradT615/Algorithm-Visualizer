@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Button } from "../ui/button"
+import { Input } from "../ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { Card, CardContent } from "../ui/card"
 
 function InsertionSort() {
     const shuffleArray = arr => {
@@ -7,6 +11,7 @@ function InsertionSort() {
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
     };
+
     const generateData = length => {
         const numbers = Array.from({ length }, (_, i) => i + 1);
         shuffleArray(numbers);
@@ -48,7 +53,7 @@ function InsertionSort() {
         if(!stopSorting.current) {
             await new Promise(resolve => setTimeout(resolve, delay));
             stopSorting.current = true;
-            setState(prevState => ({ ...prevState, activeIndices: [], movingIndices: [], completedIndices: []}));
+            setState(prevState => ({ ...prevState, activeIndices: [], completedIndices: []}));
             return;
         }
 
@@ -59,14 +64,12 @@ function InsertionSort() {
             let key = arr[i];
             let j = i - 1;
 
-            // Highlight the currently selected element (key)
             setState(prevState => ({ ...prevState, activeIndices: [i] }));
             await new Promise(resolve => setTimeout(resolve, delay));
 
             while (j >= 0 && arr[j] > key) {
                 if (stopSorting.current) return;
 
-                // Highlight the elements being compared (arr[j] and key)
                 setState(prevState => ({ ...prevState, activeIndices: [j, i] }));
                 await new Promise(resolve => setTimeout(resolve, delay));
 
@@ -74,7 +77,6 @@ function InsertionSort() {
                 j = j - 1;
 
                 if (stopSorting.current) return;
-                // Update the data array to reflect the swap
                 setState(prevState => ({ ...prevState, data: arr }));
                 await new Promise(resolve => setTimeout(resolve, delay));
                 if (stopSorting.current) return;
@@ -97,74 +99,81 @@ function InsertionSort() {
         }));
     };
 
-    useEffect(() => {
-        stopSorting.current = true;  // Signal to stop the sorting
-        setState(prevState => ({ ...prevState, data: generateData(state.numItems), activeIndices: [], completedIndices: [] }));
-    }, [state.numItems]);
-
     const maxNumber = Math.max(...state.data);
     const isMediumScreen = window.innerWidth < 768;
     const barWidth = 100 / state.numItems;
 
     return (
-        <div className='flex flex-col justify-center items-center h-screen w-full space-y-4 pt-12'>
-            <h1 className='text-2xl lg:text-6xl pt-20 lg:pb-20'>Insertion Sort</h1>
-            <div className="flex items-end max-w-4xl" style={{ height: '400px', minHeight: '100px', width: '90%', gap: '1px' }}>
-                {state.data.map((value, idx) => (
-                    <div 
-                        key={idx}
-                        style={{ height: `${(value / maxNumber) * 100}%`, width: `${barWidth}%` }}
-                        className={`
-                            ${state.activeIndices.includes(idx) ? 'bg-customPink' : ''}
-                            ${state.completedIndices.includes(idx) ? 'bg-customPurple' : ''}
-                            ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) ? 'bg-customLightBlue' : ''}
-                        `}
-                    />
-                ))}
-            </div>
-            <div className='flex flex-col-reverse sm:flex-row gap-4 w-full max-w-xl py-10'>
-                <div className='flex justify-center gap-4 w-full'>
-                    <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={insertionSort}>Sort</button>
-                    <button className='px-4 py-1 text-2xl bg-customLightBlue rounded-lg' onClick={handleRandomize}>Randomize</button>
+        <div className='flex flex-col justify-center items-center w-full space-y-6 p-4'>
+            <h1 className='text-3xl lg:text-6xl font-bold mb-8'>Insertion Sort</h1>
+            <Card className="w-full max-w-4xl">
+                <CardContent className="p-6">
+                    <div className="flex items-end h-[400px]" style={{ gap: '1px' }}>
+                        {state.data.map((value, idx) => (
+                            <div 
+                                key={idx}
+                                style={{ 
+                                    height: `${(value / maxNumber) * 100}%`, 
+                                    width: `${barWidth}%` 
+                                }}
+                                className={`
+                                    ${state.activeIndices.includes(idx) ? 'bg-primary' : ''}
+                                    ${state.completedIndices.includes(idx) ? 'bg-secondary' : ''}
+                                    ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) ? 'bg-input' : ''}
+                                `}
+                            />
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+            <div className='flex flex-col sm:flex-row gap-4 w-full max-2w-xl'>
+                <div className='flex flex-col sm:flex-row gap-4 w-full'>
+                    <Button onClick={insertionSort} className="w-full sm:w-auto">Sort</Button>
+                    <Button onClick={handleRandomize} variant="outline" className="w-full sm:w-auto">Randomize</Button>
                 </div>
-                <div className='flex justify-center gap-4 w-full'>
-                    <div className='flex gap-2 items-center'>
-                        <label>n =</label>
-                        <input
+                <div className='flex flex-col sm:flex-row gap-4 w-full'>
+                    <div className='flex items-center gap-2'>
+                        <label className="text-sm font-medium">n =</label>
+                        <Input
                             type="number"
-                            min="1"
+                            min="5"
+                            max={isMediumScreen ? "50" : "100"}
                             value={state.numItems}
-                            onChange={e => {
-                                const value = parseInt(e.target.value, 10);
-
-                                if (value < 5) {
-                                    setState(prevState => ({ ...prevState, numItems: 5 }));
-                                } else if (isMediumScreen && value > 50) {
-                                    setState(prevState => ({ ...prevState, numItems: 50 }));
-                                } else if (!isMediumScreen && value > 100) {
-                                    setState(prevState => ({ ...prevState, numItems: 100 }));
-                                } else {
-                                    setState(prevState => ({ ...prevState, numItems: value }));
-                                }
-                            }}                            
-                            className="px-2 py-1 border rounded w-20"
-                            placeholder="Number of items"
+                            onChange={(e) => {
+                                const value = Math.max(5, Math.min(parseInt(e.target.value, 10), isMediumScreen ? 50 : 100));
+                                setState(prevState => ({ 
+                                    ...prevState, 
+                                    activeIndices: [], 
+                                    completedIndices: [], 
+                                    numItems: value 
+                                }));
+                            }}
+                            className="w-20"
                         />
                     </div>
-                    <div className='flex gap-2'>
-                        <label className="self-center">Speed:</label>
-                        <select 
-                            value={state.speedMultiplier}
-                            onChange={e => setState(prevState => ({ ...prevState, speedMultiplier: parseFloat(e.target.value) }))}
-                            className="border rounded">
-                            <option value={0.25}>0.25x</option>
-                            <option value={0.5}>0.5x</option>
-                            <option value={1}>1x</option>
-                            <option value={2}>2x</option>
-                            <option value={4}>4x</option>
-                            <option value={8}>8x</option>
-                            <option value={16}>16x</option>
-                        </select>
+                    <div className='flex items-center gap-2'>
+                        <label className="text-sm font-medium">Speed:</label>
+                        <Select 
+                            value={state.speedMultiplier.toString()}
+                            onValueChange={(value) => {
+                                stopSorting.current = true;
+                                setState(prevState => ({ 
+                                    ...prevState, 
+                                    activeIndices: [], 
+                                    completedIndices: [], 
+                                    speedMultiplier: parseFloat(value) 
+                                }));
+                            }}
+                        >
+                            <SelectTrigger className="w-[100px]">
+                                <SelectValue placeholder="Speed" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {[0.25, 0.5, 1, 2, 4, 8, 16].map((speed) => (
+                                    <SelectItem key={speed} value={speed.toString()}>{speed}x</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
             </div>

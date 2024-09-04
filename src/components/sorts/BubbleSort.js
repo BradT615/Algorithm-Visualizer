@@ -113,14 +113,14 @@ function BubbleSort() {
                                 className={`
                                     ${state.activeIndices.includes(idx) ? 'bg-primary' : ''}
                                     ${state.completedIndices.includes(idx) ? 'bg-secondary' : ''}
-                                    ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) ? 'bg-muted' : ''}
+                                    ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) ? 'bg-input' : ''}
                                 `}
                             />
                         ))}
                     </div>
                 </CardContent>
             </Card>
-            <div className='flex flex-col sm:flex-row gap-4 w-full max-w-xl'>
+            <div className='flex flex-col sm:flex-row gap-4 w-full max-w-2xl'>
                 <div className='flex flex-col sm:flex-row gap-4 w-full'>
                     <Button onClick={bubbleSort} className="w-full sm:w-auto">Sort</Button>
                     <Button onClick={handleRandomize} variant="outline" className="w-full sm:w-auto">Randomize</Button>
