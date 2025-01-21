@@ -95,7 +95,7 @@ function BogoSort() {
     const barWidth = 100 / state.numItems;
 
     return (
-        <div className='flex flex-col justify-center items-center w-full space-y-6 p-4'>
+        <div className='flex flex-col justify-center items-center w-full h-screen space-y-6 p-4'>
             <div className='text-center'>
                 <h1 className='text-3xl lg:text-6xl font-bold mb-4'>Bogo Sort</h1>
                 <h2 className='text-xl lg:text-3xl'>Good Luck!</h2>

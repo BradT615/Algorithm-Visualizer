@@ -98,7 +98,7 @@ function BubbleSort() {
     const barWidth = 100 / state.numItems;
 
     return (
-        <div className='flex flex-col justify-center items-center w-full space-y-6 p-4'>
+        <div className='flex flex-col justify-center items-center w-full h-screen space-y-6 p-4'>
             <h1 className='text-3xl lg:text-6xl font-bold mb-8'>Bubble Sort</h1>
             <Card className="w-full max-w-4xl">
                 <CardContent className="p-6">
