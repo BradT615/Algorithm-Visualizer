@@ -5,7 +5,7 @@ import logo from '../assets/Logo.png';
 
 function NavbarComponent() {
     return (
-        <nav className="fixed w-full flex justify-between items-center">
+        <nav className="fixed w-full flex justify-between items-center bg-background z-10">
             <Link to="/" className='flex items-center'>
                 <img src={logo} className="w-16 sm:w-24" alt="Logo" />
                 <h1 className="text-lg sm:text-3xl font-semibold">Algorithm Visualizer</h1>

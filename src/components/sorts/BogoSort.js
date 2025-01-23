@@ -95,7 +95,8 @@ function BogoSort() {
     const barWidth = 100 / state.numItems;
 
     return (
-        <div className='flex flex-col justify-center items-center w-full h-screen space-y-6 p-4'>
+        <div className='flex flex-col justify-center items-center border-white w-full space-y-6 p-4 mt-20 lg:mt-24 relative'>
+            <div className='fixed top-16 lg:top-20 left-0 right-0 h-8 lg:h-8 w-full bg-gradient-to-b from-background to-transparent' />
             <div className='text-center'>
                 <h1 className='text-3xl lg:text-6xl font-bold mb-4'>Bogo Sort</h1>
                 <h2 className='text-xl lg:text-3xl'>Good Luck!</h2>
@@ -126,7 +127,7 @@ function BogoSort() {
                     <Button onClick={startBogoSort} className="w-full sm:w-auto">Sort</Button>
                     <Button onClick={handleRandomize} variant="outline" className="w-full sm:w-auto">Randomize</Button>
                 </div>
-                <div className='flex flex-col sm:flex-row gap-4 w-full'>
+                <div className='flex justify-around gap-4 w-full'>
                     <div className='flex items-center gap-2'>
                         <label className="text-sm font-medium">n =</label>
                         <Input
