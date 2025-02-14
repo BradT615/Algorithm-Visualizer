@@ -16,7 +16,7 @@ function Home() {
             <div className="flex flex-col gap-4 mt-24">
                 {algorithmNames.map((name, i) => (
                     <Link key={i} to={`/${name}`}>
-                        <Card className="bg-card hover:bg-primary/10 transition-colors duration-200">
+                        <Card className="bg-card hover:bg-primary/10 shadow-md hover:shadow-sm transition-colors duration-200">
                             <CardContent className="p-6">
                                 <CardTitle className="text-card-foreground text-xl text-center">
                                     {name}

@@ -1,20 +1,35 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { ModeToggle } from './theme-toggle';
 import { FaGithub } from 'react-icons/fa';
-import logo from '../assets/Logo.png';
+import { Button } from "../components/ui/button";
+import Logo from './Logo';
 
 function NavbarComponent() {
     return (
-        <nav className="fixed w-full flex justify-between items-center bg-background z-10">
-            <Link to="/" className='flex items-center'>
-                <img src={logo} className="w-16 sm:w-24" alt="Logo" />
-                <h1 className="text-lg sm:text-3xl font-semibold">Algorithm Visualizer</h1>
+        <nav className="fixed w-full flex justify-between items-center bg-muted z-10 px-2 sm:px-4 h-20 shadow-sm">
+            <Link to="/" className="flex items-center gap-1 sm:gap-4">
+                <Logo className="w-10 sm:w-12" />
+                <h1 className="text-lg sm:text-2xl font-semibold">Algorithm Visualizer</h1>
             </Link>
-            <button className="p-4 rounded-full transition-all duration-200 ease-in-out hover:bg-primary/10 hover:scale-110 hover:opacity-80">
-                <Link to="https://github.com/BradT615/Algorithm-Visualizer" target="_blank" rel="noopener noreferrer">
-                    <FaGithub className="h-8 w-8 sm:h-12 sm:w-12" />
-                </Link>
-            </button>
+            <div className="flex items-center gap-2 sm:gap-6">
+                <ModeToggle />
+                <Button
+                    variant="outline"
+                    size="default"
+                    asChild
+                    className="gap-2"
+                >
+                    <Link 
+                        to="https://github.com/BradT615/Algorithm-Visualizer" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                    >
+                        <FaGithub className="w-4 h-4" />
+                        GitHub
+                    </Link>
+                </Button>
+            </div>
         </nav>
     );
 }

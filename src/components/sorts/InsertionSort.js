@@ -127,7 +127,7 @@ function InsertionSort() {
                     </div>
                 </CardContent>
             </Card>
-            <div className='flex flex-col sm:flex-row gap-4 w-full max-2w-xl'>
+            <div className='flex flex-col sm:flex-row gap-4 w-full max-w-xl'>
                 <div className='flex flex-col sm:flex-row gap-4 w-full'>
                     <Button onClick={insertionSort} className="w-full sm:w-auto">Sort</Button>
                     <Button onClick={handleRandomize} variant="outline" className="w-full sm:w-auto">Randomize</Button>
