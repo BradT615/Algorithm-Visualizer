@@ -100,31 +100,29 @@ function BubbleSort() {
     const barWidth = 100 / state.numItems;
 
     return (
-        <div className='flex border [@media(min-height:700px)]:flex-col [@media(min-height:700px)]:justify-center [@media(min-height:700px)]:items-center  w-full h-[87vh] mt-20 lg:mt-24 relative'>
+        <div className='flex flex-col justify-center items-center border-white w-full space-y-6 p-4 mt-20 lg:mt-24 relative'>
             <div className='fixed top-16 lg:top-20 left-0 right-0 h-8 lg:h-8 w-full bg-gradient-to-b from-background to-transparent' />
-            <div className='flex flex-col [@media(min-height:700px)]:items-center w-full h-[90%] gap-2 px-4 pb-3'>
-                <h1 className='[@media(max-height:700px)]:text-2xl text-3xl lg:text-6xl [@media(max-height:700px)]:self-start font-bold'>Bubble Sort</h1>
-                <Card className="w-full max-w-6xl min-h-[200px] h-full max-h-[500px]">
-                    <CardContent className="p-3 [@media(min-height:700px)]:p-6 h-full">
-                        <div className="flex items-end h-full" style={{ gap: '1px' }}>
-                            {state.data.map((value, idx) => (
-                                <div 
-                                    key={idx}
-                                    style={{ 
-                                        height: `${(value / maxNumber) * 100}%`, 
-                                        width: `${barWidth}%` 
-                                    }}
-                                    className={`
-                                        ${state.activeIndices.includes(idx) ? 'bg-primary' : ''}
-                                        ${state.completedIndices.includes(idx) ? 'bg-secondary' : ''}
-                                        ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) ? 'bg-input' : ''}
-                                    `}
-                                />
-                            ))}
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
+            <h1 className='text-3xl lg:text-6xl font-bold mb-8'>Cocktail Sort</h1>
+            <Card className="w-full max-w-4xl">
+                <CardContent className="p-6">
+                    <div className="flex items-end h-[400px]" style={{ gap: '1px' }}>
+                        {state.data.map((value, idx) => (
+                            <div 
+                                key={idx}
+                                style={{ 
+                                    height: `${(value / maxNumber) * 100}%`, 
+                                    width: `${barWidth}%` 
+                                }}
+                                className={`
+                                    ${state.activeIndices.includes(idx) ? 'bg-primary' : ''}
+                                    ${state.completedIndices.includes(idx) ? 'bg-secondary' : ''}
+                                    ${!state.activeIndices.includes(idx) && !state.completedIndices.includes(idx) ? 'bg-input' : ''}
+                                `}
+                            />
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
             <div className='flex flex-col sm:flex-row gap-4 w-full max-w-2xl'>
                 <div className='flex flex-col sm:flex-row gap-4 w-full'>
                     <Button onClick={bubbleSort} className="w-full sm:w-auto">Sort</Button>

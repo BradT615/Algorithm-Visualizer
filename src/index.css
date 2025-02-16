@@ -4,69 +4,67 @@
 
 @layer base {
   :root {
-    --background: 220 23.076923191547394% 94.90196108818054%; /* base */
-    --foreground: 234 16.022099554538727% 35.49019694328308%; /* text */
+    /* Light theme - iOS 15 inspired colors */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
     
-    --muted: 223 15.909090638160706% 82.74509906768799%; /* surface0 */
-    --muted-foreground: 233 12.796208262443542% 41.372549533843994%; /* subtext1 */
+    --card: 0 0% 98%;
+    --card-foreground: 240 10% 3.9%;
     
-    --popover: 220 23.076923191547394% 94.90196108818054%; /* base */
-    --popover-foreground: 234 16.022099554538727% 35.49019694328308%; /* text */
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
     
-    --card: 220 23.076923191547394% 94.90196108818054%; /* base */
-    --card-foreground: 234 16.022099554538727% 35.49019694328308%; /* text */
+    --primary: 211 100% 50%;
+    --primary-foreground: 0 0% 98%;
     
-    --border: 225 13.55932205915451% 76.86274647712708%; /* surface1 */
-    --input: 225 13.55932205915451% 76.86274647712708%; /* surface1 */
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 10% 3.9%;
     
-    --primary: 197 96.56652212142944% 45.686274766922%; /* accent - Sky */
-    --primary-foreground: 220 23.076923191547394% 94.90196108818054%; /* base */
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
     
-    --secondary: 223 15.909090638160706% 82.74509906768799%; /* surface0 */
-    --secondary-foreground: 234 16.022099554538727% 35.49019694328308%; /* text */
+    --accent: 211 100% 96%;
+    --accent-foreground: 211 100% 50%;
     
-    --accent: 223 15.909090638160706% 82.74509906768799%; /* surface0 */
-    --accent-foreground: 234 16.022099554538727% 35.49019694328308%; /* text */
-    
-    --destructive: 347 86.66666746139526% 44.11764740943909%; /* red */
-    --destructive-foreground: 220 21.95121943950653% 91.96078181266785%; /* mantle */
-    
-    --ring: 234 16.022099554538727% 35.49019694328308%; /* text */
-    
-    --radius: 0.5rem;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 211 100% 50%;
+
+    --radius: 1rem;
   }
 
   .dark {
-    --background: 240 21.052631735801697% 14.901961386203766%; /* base */
-    --foreground: 226 63.93442749977112% 88.03921341896057%; /* text */
+    /* Dark theme - iOS 15 inspired colors */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
     
-    --muted: 237 16.239316761493683% 22.94117659330368%; /* surface0 */
-    --muted-foreground: 227 35.29411852359772% 80.0000011920929%; /* subtext1 */
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
     
-    --popover: 240 21.052631735801697% 14.901961386203766%; /* base */
-    --popover-foreground: 226 63.93442749977112% 88.03921341896057%; /* text */
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
     
-    --card: 240 21.052631735801697% 14.901961386203766%; /* base */
-    --card-foreground: 226 63.93442749977112% 88.03921341896057%; /* text */
+    --primary: 211 100% 50%;
+    --primary-foreground: 0 0% 98%;
     
-    --border: 234 13.20754736661911% 31.176471710205078%; /* surface1 */
-    --input: 234 13.20754736661911% 31.176471710205078%; /* surface1 */
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 98%;
     
-    --primary: 189 71.01449370384216% 72.9411780834198%; /* accent - Sky */
-    --primary-foreground: 240 21.052631735801697% 14.901961386203766%; /* base */
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 64.9%;
     
-    --secondary: 237 16.239316761493683% 22.94117659330368%; /* surface0 */
-    --secondary-foreground: 226 63.93442749977112% 88.03921341896057%; /* text */
+    --accent: 211 100% 16%;
+    --accent-foreground: 211 100% 50%;
     
-    --accent: 237 16.239316761493683% 22.94117659330368%; /* surface0 */
-    --accent-foreground: 226 63.93442749977112% 88.03921341896057%; /* text */
-    
-    --destructive: 343 81.25% 74.90196228027344%; /* red */
-    --destructive-foreground: 240 21.311475336551666% 11.96078434586525%; /* mantle */
-    
-    --ring: 226 63.93442749977112% 88.03921341896057%; /* text */
-    
-    --radius: 0.5rem;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 211 100% 50%;
   }
 }
 
@@ -74,12 +72,26 @@
   * {
     @apply border-border;
   }
-  
   body {
     @apply bg-background text-foreground antialiased;
     font-family: "JetBrains Mono", monospace;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
+  }
+}
+@layer components {
+  .card {
+    @apply bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-white/20 dark:border-black/20 shadow-lg;
+  }
+  
+  .button {
+    @apply rounded-full px-6 py-2 font-medium transition-all duration-200 
+           hover:scale-105 active:scale-95 disabled:opacity-50;
+  }
+  
+  .navbar {
+    @apply fixed top-0 left-0 right-0 backdrop-blur-xl bg-white/70 dark:bg-black/70 
+           border-b border-white/20 dark:border-black/20 z-50;
   }
 }

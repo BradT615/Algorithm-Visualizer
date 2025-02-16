@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardTitle } from './ui/card';
+import { Card, CardContent } from './ui/card';
 
 function Home() {
     const algorithmNames = [
@@ -10,21 +10,31 @@ function Home() {
         "CycleSort", "OddEvenSort", "RadixSort", "BogoSort"
     ];    
 
-    return (
-        <div className="min-h-screen max-w-3xl mx-auto w-full p-4 py-8">
+    // Function to add spaces before capital letters
+    const formatAlgorithmName = (name) => {
+        return name.replace(/([A-Z])/g, ' $1').trim();
+    };
 
-            <div className="flex flex-col gap-4 mt-24">
-                {algorithmNames.map((name, i) => (
-                    <Link key={i} to={`/${name}`}>
-                        <Card className="bg-card hover:bg-primary/10 shadow-md hover:shadow-sm transition-colors duration-200">
-                            <CardContent className="p-6">
-                                <CardTitle className="text-card-foreground text-xl text-center">
-                                    {name}
-                                </CardTitle>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                ))}
+    return (
+        <div className="min-h-screen w-full p-6 md:p-8">
+            <div className="max-w-4xl mx-auto mt-24">
+                <h1 className="text-4xl font-semibold text-center mb-12">
+                    Algorithm Visualizer
+                </h1>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {algorithmNames.map((name, i) => (
+                        <Link key={i} to={`/${name}`}>
+                            <Card className="group h-32 overflow-hidden transition-all duration-300 hover:scale-105">
+                                <CardContent className="h-full flex items-center justify-center p-6 bg-gradient-to-br from-white/50 to-white/30 dark:from-black/50 dark:to-black/30 backdrop-blur-xl">
+                                    <span className="text-lg font-medium text-foreground group-hover:text-primary transition-colors">
+                                        {formatAlgorithmName(name)}
+                                    </span>
+                                </CardContent>
+                            </Card>
+                        </Link>
+                    ))}
+                </div>
             </div>
         </div>
     );

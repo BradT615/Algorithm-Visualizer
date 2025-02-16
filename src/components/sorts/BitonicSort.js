@@ -151,7 +151,7 @@ function BitonicSort() {
                     <Button onClick={startBitonicSort} className="w-full sm:w-auto">Sort</Button>
                     <Button onClick={handleRandomize} variant="outline" className="w-full sm:w-auto">Randomize</Button>
                 </div>
-                <div className='flex justify-around gap-4 w-full border'>
+                <div className='flex justify-around gap-4 w-full'>
                     <div className='flex items-center gap-2'>
                         <label className="text-sm font-medium">n =</label>
                         <Select 
