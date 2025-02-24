@@ -14,7 +14,7 @@ export function ModeToggle() {
   const { theme, setTheme } = useTheme()
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="secondary" size="icon" className="hover:bg-primary/10">
           <Sun 
